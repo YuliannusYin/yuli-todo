@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useApp } from "../context/AppContext";
+import { useTasks } from "../context/TaskContext";
 import type { AppView } from "../lib/types";
 import styles from "./AppShell.module.css";
 
@@ -12,6 +13,7 @@ const NAV: { id: AppView; key: string }[] = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { view, setView, t } = useApp();
+  const { toast } = useTasks();
 
   return (
     <div className={styles.shell}>
@@ -33,6 +35,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
       </header>
       <main className={styles.body}>{children}</main>
+      {toast ? (
+        <div className={styles.toast} role="status">
+          {toast}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -8,13 +8,11 @@ pub enum AppError {
     #[error("validation error")]
     Validation { message_key: String },
     #[error("not found")]
-    #[allow(dead_code)]
     NotFound,
     #[error("not archived")]
     #[allow(dead_code)]
     NotArchived,
     #[error("type in use")]
-    #[allow(dead_code)]
     TypeInUse,
 }
 

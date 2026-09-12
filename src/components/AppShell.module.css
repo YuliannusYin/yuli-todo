@@ -47,3 +47,17 @@
   min-height: 0;
   background: var(--yl-bg);
 }
+
+.toast {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  z-index: 10;
+  min-height: 32px;
+  padding: 8px 12px;
+  background: var(--yl-card);
+  color: var(--yl-text);
+  border: 1px solid var(--yl-border);
+  border-radius: var(--yl-radius-card);
+  box-shadow: var(--yl-shadow);
+}

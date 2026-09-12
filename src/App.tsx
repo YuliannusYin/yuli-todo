@@ -1,4 +1,5 @@
 import { AppProvider, useApp } from "./context/AppContext";
+import { TaskProvider } from "./context/TaskContext";
 import { AppShell } from "./components/AppShell";
 import { ArchiveView } from "./views/ArchiveView";
 import { BoardView } from "./views/BoardView";
@@ -23,12 +24,14 @@ function Shell() {
   }
 
   return (
-    <AppShell>
-      {view === "board" ? <BoardView /> : null}
-      {view === "scheduled" ? <ScheduledView /> : null}
-      {view === "archive" ? <ArchiveView /> : null}
-      {view === "settings" ? <SettingsView /> : null}
-    </AppShell>
+    <TaskProvider>
+      <AppShell>
+        {view === "board" ? <BoardView /> : null}
+        {view === "scheduled" ? <ScheduledView /> : null}
+        {view === "archive" ? <ArchiveView /> : null}
+        {view === "settings" ? <SettingsView /> : null}
+      </AppShell>
+    </TaskProvider>
   );
 }
 

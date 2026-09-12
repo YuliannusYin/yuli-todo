@@ -41,6 +41,41 @@ export type TaskType = {
   id: string;
   name: string;
   sort_order: number;
+  in_use: boolean;
+};
+
+export type Tag = {
+  id: string;
+  name: string;
+};
+
+export type Task = {
+  id: string;
+  name: string;
+  type_id: string | null;
+  type_name: string | null;
+  content: string;
+  notes: string;
+  tags: Tag[];
+  start_at: string | null;
+  end_at: string | null;
+  status: TaskStatus;
+  board_column: BoardColumn | null;
+  doing_elapsed_seconds: number;
+  completed_at: string | null;
+  archived_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TaskWrite = {
+  name: string;
+  type_id: string | null;
+  content: string;
+  notes: string;
+  tags: string[];
+  start_at: string | null;
+  end_at: string | null;
 };
 
 export type TaskDraft = {

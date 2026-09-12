@@ -2,8 +2,8 @@
 
 A personal, offline Windows kanban. Three columns — **To Do**, **Doing**, **Done** — plus Scheduled and Archive. No account. No network.
 
-**Version:** `v0.1.0`  
-**Status:** application shell. Four empty views, theme tokens, i18n chrome, and persisted appearance settings.
+**Version:** `v0.2.0`  
+**Status:** tasks can be created, edited, and listed on Board and Scheduled. Types and tags persist. Appearance settings persist.
 
 ## License
 

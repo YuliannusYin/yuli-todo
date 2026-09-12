@@ -22,8 +22,10 @@ type TaskFormProps = {
   durationLabel?: string | null;
   submitLabel: string;
   cancelLabel: string;
+  error?: string | null;
   onCancel: () => void;
-  onSubmit: (draft: TaskDraft) => void;
+  onSubmit: (draft: TaskDraft) => void | Promise<void>;
+  onCreateType?: (name: string) => Promise<TaskType>;
 };
 
 export function TaskForm({
@@ -35,11 +37,14 @@ export function TaskForm({
   durationLabel,
   submitLabel,
   cancelLabel,
+  error,
   onCancel,
   onSubmit,
+  onCreateType,
 }: TaskFormProps) {
   const [draft, setDraft] = useState<TaskDraft>(initial ?? EMPTY_DRAFT);
   const [tagText, setTagText] = useState((initial?.tags ?? []).join(", "));
+  const [newTypeName, setNewTypeName] = useState("");
 
   function submit(event: FormEvent) {
     event.preventDefault();
@@ -85,7 +90,30 @@ export function TaskForm({
               </option>
             ))}
           </select>
-          <DialogButton disabled={!typesEnabled}>{t("field.newType")}</DialogButton>
+          {typesEnabled ? (
+            <input
+              className={styles.input}
+              value={newTypeName}
+              placeholder={t("settings.types.placeholder")}
+              onChange={(event) => setNewTypeName(event.target.value)}
+              maxLength={40}
+            />
+          ) : null}
+          <DialogButton
+            disabled={!typesEnabled}
+            onClick={() => {
+              const name = newTypeName.trim();
+              if (!name || !onCreateType) {
+                return;
+              }
+              void onCreateType(name).then((created) => {
+                setDraft((current) => ({ ...current, type_id: created.id }));
+                setNewTypeName("");
+              });
+            }}
+          >
+            {t("field.newType")}
+          </DialogButton>
         </div>
       </label>
       <label className={styles.field}>
@@ -160,6 +188,7 @@ export function TaskForm({
           {t("card.duration", { duration: durationLabel })}
         </p>
       ) : null}
+      {error ? <p className={styles.readonly}>{error}</p> : null}
       <div className={styles.row}>
         <DialogButton onClick={onCancel}>{cancelLabel}</DialogButton>
         <DialogButton type="submit" variant="primary">

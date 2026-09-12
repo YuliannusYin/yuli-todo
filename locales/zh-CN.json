@@ -107,5 +107,6 @@
   "error.validation.theme": "不支持的主题。",
   "error.validation.scheme": "不支持的明暗设置。",
   "error.validation.name": "任务名不能为空。",
-  "error.validation.times": "结束时间必须不早于开始时间。"
+  "error.validation.times": "结束时间必须不早于开始时间。",
+  "error.validation.surface": "未知的列表范围。"
 }

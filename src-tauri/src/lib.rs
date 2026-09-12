@@ -1,8 +1,11 @@
 mod commands;
 mod db;
+mod domain;
 mod error;
 mod prefs;
 mod state;
+mod tasks;
+mod time;
 
 use std::sync::Mutex;
 
@@ -42,7 +45,15 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::get_settings,
             commands::update_settings,
-            commands::get_storage_info
+            commands::get_storage_info,
+            commands::list_tasks,
+            commands::get_task,
+            commands::create_task,
+            commands::update_task,
+            commands::list_types,
+            commands::create_type,
+            commands::rename_type,
+            commands::delete_type
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

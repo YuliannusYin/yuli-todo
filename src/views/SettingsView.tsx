@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useApp } from "../context/AppContext";
+import { useTasks } from "../context/TaskContext";
 import { THEME_IDS, type ColorScheme, type LocaleId } from "../lib/types";
 import styles from "./SettingsView.module.css";
 
@@ -6,6 +8,9 @@ const SCHEMES: ColorScheme[] = ["light", "dark", "system"];
 
 export function SettingsView() {
   const { t, settings, patchSettings } = useApp();
+  const { types, addType, editType, removeType } = useTasks();
+  const [newType, setNewType] = useState("");
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
 
   return (
     <div className={styles.page}>
@@ -83,14 +88,63 @@ export function SettingsView() {
       <section className={styles.section}>
         <h2 className={styles.heading}>{t("settings.types.title")}</h2>
         <div className={styles.types}>
+          {types.map((type) => (
+            <div key={type.id} className={styles.typeRow}>
+              <input
+                className={styles.input}
+                value={drafts[type.id] ?? type.name}
+                onChange={(event) =>
+                  setDrafts((current) => ({ ...current, [type.id]: event.target.value }))
+                }
+                maxLength={40}
+              />
+              <button
+                type="button"
+                className={styles.schemeBtn}
+                onClick={() =>
+                  void editType(type.id, drafts[type.id] ?? type.name).then(() =>
+                    setDrafts((current) => {
+                      const next = { ...current };
+                      delete next[type.id];
+                      return next;
+                    }),
+                  )
+                }
+              >
+                {t("settings.types.rename")}
+              </button>
+              <button
+                type="button"
+                className={styles.schemeBtn}
+                disabled={type.in_use}
+                onClick={() => void removeType(type.id)}
+              >
+                {t("settings.types.delete")}
+              </button>
+            </div>
+          ))}
           <div className={styles.typeRow}>
-            <input className={styles.input} disabled placeholder={t("settings.types.placeholder")} />
-            <button type="button" className={styles.schemeBtn} disabled>
+            <input
+              className={styles.input}
+              value={newType}
+              placeholder={t("settings.types.placeholder")}
+              onChange={(event) => setNewType(event.target.value)}
+              maxLength={40}
+            />
+            <button
+              type="button"
+              className={styles.schemeBtn}
+              onClick={() => {
+                if (!newType.trim()) {
+                  return;
+                }
+                void addType(newType).then(() => setNewType(""));
+              }}
+            >
               {t("settings.types.add")}
             </button>
           </div>
         </div>
-        <p className={styles.hint}>{t("settings.types.disabledHint")}</p>
       </section>
     </div>
   );

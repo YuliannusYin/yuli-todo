@@ -107,5 +107,6 @@
   "error.validation.theme": "Unsupported theme.",
   "error.validation.scheme": "Unsupported color scheme.",
   "error.validation.name": "Name is required.",
-  "error.validation.times": "End time must be at or after start time."
+  "error.validation.times": "End time must be at or after start time.",
+  "error.validation.surface": "Unknown list surface."
 }
