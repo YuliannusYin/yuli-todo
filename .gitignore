@@ -1,0 +1,46 @@
+# Node / Vite
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Rust / Tauri
+src-tauri/target/
+src-tauri/gen/
+src-tauri/WixTools/
+src-tauri/nsis/
+*.pdb
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# OS
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+.DS_Store
+
+# Editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log

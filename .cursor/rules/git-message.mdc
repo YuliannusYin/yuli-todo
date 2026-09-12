@@ -1,0 +1,50 @@
+---
+description: Commit and annotated-tag message format for this repo
+alwaysApply: true
+---
+
+# Git messages
+
+English identifiers in the project; these message templates may use Chinese after the type label.
+
+## Commit
+
+```plaintext
+v<major>.<minor>.<patch>
+
+- <type>: <description>
+- <type>: <description>
+
+```
+
+Types:
+
+- `refactor`: 代码重构，调整内部逻辑结构，无功能变更
+- `perf`: 性能优化，提升运行效率、降低资源消耗
+- `feat`: 新增功能
+- `fix`: 修复bug
+- `docs`: 文档变更
+- `style`: 格式变更，仅缩进空格换行，不影响代码运行
+- `test`: 新增/修改测试用例
+- `chore`: 构建、依赖、工程配置变更
+
+## Annotated tag
+
+```plaintext
+v<version>: <release-type> - 版本简述
+
+feature:
+- (<scope>) 描述
+
+fix:
+- (<scope>) 描述
+
+refactor:
+- (<scope>) 描述
+
+perf:
+- (<scope>) 描述
+
+docs:
+- (<scope>) 描述
+```
