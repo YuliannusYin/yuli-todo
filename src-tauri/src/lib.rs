@@ -1,3 +1,4 @@
+mod clock;
 mod commands;
 mod db;
 mod domain;
@@ -40,6 +41,7 @@ pub fn run() {
         .setup(|app| {
             let state = build_state(app.handle());
             app.manage(state);
+            crate::clock::spawn(app.handle());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -55,7 +57,8 @@ pub fn run() {
             commands::rename_type,
             commands::delete_type,
             commands::move_task,
-            commands::archive_now
+            commands::archive_now,
+            commands::delete_task
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

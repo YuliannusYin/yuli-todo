@@ -2,8 +2,8 @@
 
 A personal, offline Windows kanban. Three columns — **To Do**, **Doing**, **Done** — plus Scheduled and Archive. No account. No network.
 
-**Version:** `v0.3.0`  
-**Status:** board drag, Done confirmation, Archive now, and reverse drag from Done.
+**Version:** `v0.4.0`  
+**Status:** clock tick, overdue and auto-archive, Archive filters and delete, archive delay setting.
 
 ## License
 

@@ -233,7 +233,7 @@ fn upsert_tags(conn: &Connection, task_id: &str, names: &[String]) -> Result<(),
     Ok(())
 }
 
-fn load_record(conn: &Connection, id: &str) -> Result<TaskRecord, AppError> {
+pub(crate) fn load_record(conn: &Connection, id: &str) -> Result<TaskRecord, AppError> {
     conn.query_row(
         "SELECT status, board_column, start_at, end_at, doing_elapsed_seconds, doing_started_at, completed_at, archived_at
          FROM tasks WHERE id = ?1",
@@ -415,7 +415,7 @@ pub fn delete_type(conn: &Connection, id: &str) -> Result<(), AppError> {
     Ok(())
 }
 
-fn persist_lifecycle(conn: &Connection, id: &str, record: &TaskRecord, now: DateTime<Utc>) -> Result<(), AppError> {
+pub(crate) fn persist_lifecycle(conn: &Connection, id: &str, record: &TaskRecord, now: DateTime<Utc>) -> Result<(), AppError> {
     conn.execute(
         "UPDATE tasks SET status=?1, board_column=?2, doing_elapsed_seconds=?3, doing_started_at=?4,
          completed_at=?5, archived_at=?6, updated_at=?7 WHERE id=?8",
@@ -457,4 +457,94 @@ pub fn archive_now(conn: &Connection, id: &str) -> Result<TaskDto, AppError> {
     apply_archive_now(&mut record, now);
     persist_lifecycle(conn, id, &record, now)?;
     get_task(conn, id)
+}
+
+pub fn delete_task(conn: &Connection, id: &str) -> Result<(), AppError> {
+    let archived: Option<Option<String>> = conn
+        .query_row(
+            "SELECT archived_at FROM tasks WHERE id = ?1",
+            params![id],
+            |row| row.get(0),
+        )
+        .optional()?;
+    match archived {
+        None => Err(AppError::NotFound),
+        Some(None) => Err(AppError::NotArchived),
+        Some(Some(_)) => {
+            conn.execute("DELETE FROM tasks WHERE id = ?1", params![id])?;
+            Ok(())
+        }
+    }
+}
+
+fn query_ids(conn: &Connection, sql: &str, param: &str) -> Result<Vec<String>, AppError> {
+    let mut stmt = conn.prepare(sql)?;
+    let ids = stmt
+        .query_map(params![param], |row| row.get(0))?
+        .collect::<Result<Vec<String>, _>>()?;
+    Ok(ids)
+}
+
+pub fn clock_tick(conn: &Connection) -> Result<bool, AppError> {
+    let now = now_utc();
+    let now_s = format_rfc3339(now);
+    let tx = conn.unchecked_transaction()?;
+    let mut changed = false;
+
+    let promote_ids = query_ids(
+        &tx,
+        "SELECT id FROM tasks WHERE archived_at IS NULL AND status = 'will_do' AND start_at IS NOT NULL AND start_at <= ?1",
+        &now_s,
+    )?;
+    for id in promote_ids {
+        let mut record = load_record(&tx, &id)?;
+        let previous = record.clone();
+        apply_time_rules(&mut record, now);
+        if record != previous {
+            persist_lifecycle(&tx, &id, &record, now)?;
+            changed = true;
+        }
+    }
+
+    let overdue_ids = query_ids(
+        &tx,
+        "SELECT id FROM tasks WHERE archived_at IS NULL AND board_column IN ('todo','doing')
+         AND (
+           (status IN ('to_do','doing') AND end_at IS NOT NULL AND end_at <= ?1)
+           OR (status = 'overdue' AND (end_at IS NULL OR end_at > ?1))
+         )",
+        &now_s,
+    )?;
+    for id in overdue_ids {
+        let mut record = load_record(&tx, &id)?;
+        let previous = record.clone();
+        apply_time_rules(&mut record, now);
+        if record != previous {
+            persist_lifecycle(&tx, &id, &record, now)?;
+            changed = true;
+        }
+    }
+
+    let days: i64 = tx.query_row(
+        "SELECT archive_after_days FROM settings WHERE id = 1",
+        [],
+        |row| row.get(0),
+    )?;
+    let cutoff = now - chrono::Duration::days(days);
+    let cutoff_s = format_rfc3339(cutoff);
+    let archive_ids = query_ids(
+        &tx,
+        "SELECT id FROM tasks WHERE archived_at IS NULL AND status IN ('done','belated')
+         AND completed_at IS NOT NULL AND completed_at <= ?1",
+        &cutoff_s,
+    )?;
+    for id in archive_ids {
+        let mut record = load_record(&tx, &id)?;
+        record.archived_at = Some(now);
+        persist_lifecycle(&tx, &id, &record, now)?;
+        changed = true;
+    }
+
+    tx.commit()?;
+    Ok(changed)
 }

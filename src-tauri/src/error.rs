@@ -10,7 +10,6 @@ pub enum AppError {
     #[error("not found")]
     NotFound,
     #[error("not archived")]
-    #[allow(dead_code)]
     NotArchived,
     #[error("type in use")]
     TypeInUse,

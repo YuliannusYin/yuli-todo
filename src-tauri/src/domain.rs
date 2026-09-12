@@ -64,7 +64,7 @@ impl Column {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct TaskRecord {
     pub status: Status,
     pub board_column: Option<Column>,

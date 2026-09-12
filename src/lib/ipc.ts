@@ -52,3 +52,7 @@ export function moveTask(id: string, to_column: string) {
 export function archiveNow(id: string) {
   return invoke<Task>("archive_now", { id });
 }
+
+export function deleteTask(id: string) {
+  return invoke<void>("delete_task", { id });
+}

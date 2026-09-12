@@ -4519,7 +4519,7 @@ dependencies = [
 
 [[package]]
 name = "yuli-todo"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "chrono",
  "rusqlite",
@@ -4528,6 +4528,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "thiserror 2.0.20",
+ "tokio",
  "uuid",
 ]
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useApp } from "../context/AppContext";
 import { useTasks } from "../context/TaskContext";
 import { THEME_IDS, type ColorScheme, type LocaleId } from "../lib/types";
@@ -11,6 +11,25 @@ export function SettingsView() {
   const { types, addType, editType, removeType } = useTasks();
   const [newType, setNewType] = useState("");
   const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [daysDraft, setDaysDraft] = useState(String(settings.archive_after_days));
+  const [daysError, setDaysError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setDaysDraft(String(settings.archive_after_days));
+  }, [settings.archive_after_days]);
+
+  function commitArchiveDays() {
+    const parsed = Number(daysDraft);
+    if (daysDraft.trim() === "" || !Number.isInteger(parsed) || parsed < 0 || parsed > 365) {
+      setDaysError(t("error.validation.archiveDays"));
+      setDaysDraft(String(settings.archive_after_days));
+      return;
+    }
+    setDaysError(null);
+    if (parsed !== settings.archive_after_days) {
+      void patchSettings({ archive_after_days: parsed });
+    }
+  }
 
   return (
     <div className={styles.page}>
@@ -23,12 +42,21 @@ export function SettingsView() {
             type="number"
             min={0}
             max={365}
-            value={settings.archive_after_days}
-            disabled
+            value={daysDraft}
+            onChange={(event) => {
+              setDaysDraft(event.target.value);
+              setDaysError(null);
+            }}
+            onBlur={commitArchiveDays}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                (event.target as HTMLInputElement).blur();
+              }
+            }}
           />
         </label>
         <p className={styles.helper}>{t("settings.archive.helper")}</p>
-        <p className={styles.hint}>{t("settings.archive.disabledHint")}</p>
+        {daysError ? <p className={styles.error}>{daysError}</p> : null}
       </section>
 
       <section className={styles.section}>

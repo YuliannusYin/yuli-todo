@@ -7,10 +7,12 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { listen } from "@tauri-apps/api/event";
 import {
   archiveNow,
   createTask,
   createType,
+  deleteTask,
   deleteType,
   listTasks,
   listTypes,
@@ -32,6 +34,7 @@ type TaskContextValue = {
   saveExisting: (id: string, payload: TaskWrite) => Promise<Task>;
   moveToColumn: (id: string, to: "todo" | "doing" | "done") => Promise<void>;
   archiveTask: (id: string) => Promise<void>;
+  removeTask: (id: string) => Promise<void>;
   addType: (name: string) => Promise<TaskType>;
   editType: (id: string, name: string) => Promise<void>;
   removeType: (id: string) => Promise<void>;
@@ -61,6 +64,26 @@ export function TaskProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void refresh();
+  }, [refresh]);
+
+  useEffect(() => {
+    let disposed = false;
+    let unlisten: (() => void) | undefined;
+    void listen("tasks-changed", () => {
+      void refresh();
+    })
+      .then((fn) => {
+        if (disposed) {
+          fn();
+        } else {
+          unlisten = fn;
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      disposed = true;
+      unlisten?.();
+    };
   }, [refresh]);
 
   useEffect(() => {
@@ -102,6 +125,14 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     [refresh],
   );
 
+  const removeTask = useCallback(
+    async (id: string) => {
+      await deleteTask(id);
+      await refresh();
+    },
+    [refresh],
+  );
+
   const addType = useCallback(async (name: string) => {
     const created = await createType(name);
     await refresh();
@@ -137,6 +168,7 @@ export function TaskProvider({ children }: { children: ReactNode }) {
       saveExisting,
       moveToColumn,
       archiveTask,
+      removeTask,
       addType,
       editType,
       removeType,
@@ -152,6 +184,7 @@ export function TaskProvider({ children }: { children: ReactNode }) {
       saveExisting,
       moveToColumn,
       archiveTask,
+      removeTask,
       addType,
       editType,
       removeType,

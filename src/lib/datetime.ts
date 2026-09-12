@@ -43,6 +43,28 @@ export function isFutureIso(iso: string, now = new Date()): boolean {
   return new Date(iso).getTime() > now.getTime();
 }
 
+export function startOfLocalDay(dateValue: string): number | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateValue);
+  if (!match) {
+    return null;
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  return new Date(year, month - 1, day, 0, 0, 0, 0).getTime();
+}
+
+export function endOfLocalDay(dateValue: string): number | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateValue);
+  if (!match) {
+    return null;
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  return new Date(year, month - 1, day, 23, 59, 59, 999).getTime();
+}
+
 export function formatDuration(totalSeconds: number, locale: LocaleId): string {
   const minutesTotal = Math.floor(Math.max(0, totalSeconds) / 60);
   if (minutesTotal < 1) {

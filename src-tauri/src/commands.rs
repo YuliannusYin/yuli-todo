@@ -89,3 +89,8 @@ pub fn move_task(state: State<AppState>, id: String, to_column: String) -> Resul
 pub fn archive_now(state: State<AppState>, id: String) -> Result<crate::tasks::TaskDto, AppError> {
     with_conn(&state, |conn| crate::tasks::archive_now(conn, &id))
 }
+
+#[tauri::command]
+pub fn delete_task(state: State<AppState>, id: String) -> Result<(), AppError> {
+    with_conn(&state, |conn| crate::tasks::delete_task(conn, &id))
+}
