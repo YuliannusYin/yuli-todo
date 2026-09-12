@@ -2,12 +2,21 @@
 
 A personal, offline Windows kanban. Three columns — **To Do**, **Doing**, **Done** — plus Scheduled and Archive. No account. No network.
 
-**Version:** `v0.0.0`  
-**Status:** design documentation only. Application source is not in this repository yet.
+**Version:** `v0.1.0`  
+**Status:** application shell. Four empty views, theme tokens, i18n chrome, and persisted appearance settings.
 
 ## License
 
 [MIT](LICENSE) © 2026 MrY
+
+## Development
+
+Requires Node LTS, Rust stable, and Windows with WebView2.
+
+```
+npm install
+npm run tauri dev
+```
 
 ## Documentation
 
@@ -21,9 +30,9 @@ Read in this order:
 
 The product language is English. Simplified Chinese is a UI translation, specified in [docs/i18n.md](docs/i18n.md).
 
-## Locked stack (implementation, later)
+## Locked stack
 
-Tauri 2, React, TypeScript, Vite, CSS Modules, `@dnd-kit`, SQLite via `rusqlite` in Rust. Windows x64 only. Details: [docs/architecture.md](docs/architecture.md).
+Tauri 2, React, TypeScript, Vite, CSS Modules, SQLite via `rusqlite` in Rust. Windows x64 only. Details: [docs/architecture.md](docs/architecture.md).
 
 ## Repository layout
 
@@ -31,5 +40,8 @@ Tauri 2, React, TypeScript, Vite, CSS Modules, `@dnd-kit`, SQLite via `rusqlite`
 LICENSE
 README.md
 docs/           English design specs
+locales/        en and zh-CN UI catalogs
+src/            React + CSS Modules + token CSS
+src-tauri/      Rust commands and SQLite
 .cursor/rules/  Git message format
 ```

@@ -1,0 +1,9 @@
+.page {
+  height: 100%;
+  padding: 16px 20px;
+}
+
+.empty {
+  color: var(--yl-text-muted);
+  margin: 24px 0;
+}

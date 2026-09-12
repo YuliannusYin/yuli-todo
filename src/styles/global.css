@@ -1,0 +1,101 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--yl-bg);
+  color: var(--yl-text);
+  font-family: var(--yl-font-body), "Microsoft YaHei UI", "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--yl-font-display), "Microsoft YaHei UI", sans-serif;
+  font-weight: 600;
+  margin: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--yl-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--yl-accent);
+  color: var(--yl-accent-text);
+}
+
+html[data-theme="metal"] body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+html[data-theme="metal"] [data-card] {
+  box-shadow: var(--yl-shadow), inset 1px 1px 0 rgba(255, 255, 255, 0.28),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.12);
+}
+
+html[data-theme="metal"] [data-nav][data-active] {
+  box-shadow: inset 3px 0 0 var(--yl-accent);
+}
+
+html[data-theme="claude"] [data-nav][data-active] {
+  background: var(--yl-card);
+  border-radius: 999px;
+}
+
+html[data-theme="vscode"] [data-nav][data-active] {
+  background: var(--yl-card);
+  border-radius: 0;
+}
+
+html[data-theme="vscode"] [data-column-header] {
+  border-bottom: 2px solid var(--yl-accent);
+}
+
+html[data-theme="github"] [data-nav][data-active] {
+  box-shadow: inset 0 -2px 0 var(--yl-accent);
+  border-radius: 0;
+}
+
+html[data-theme="tiktok"] [data-nav][data-active] {
+  background: var(--yl-accent);
+  color: var(--yl-accent-text);
+}
+
+html[data-theme="tiktok"] [data-column-header]::after {
+  content: "";
+  display: block;
+  height: 2px;
+  margin-top: 6px;
+  background: linear-gradient(90deg, var(--yl-accent), var(--yl-flourish));
+}
+
+html[data-theme="tiktok"][data-scheme="dark"] [data-card][data-dragging] {
+  box-shadow: 0 0 8px color-mix(in srgb, var(--yl-accent) 20%, transparent);
+}

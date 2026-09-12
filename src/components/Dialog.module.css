@@ -1,0 +1,70 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--yl-text) 28%, transparent);
+  padding: 24px;
+}
+
+.panel {
+  width: min(560px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  background: var(--yl-surface);
+  color: var(--yl-text);
+  border: 1px solid var(--yl-border);
+  border-radius: var(--yl-radius-card);
+  box-shadow: var(--yl-shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel[data-size="large"] {
+  width: min(720px, 100%);
+}
+
+.header {
+  padding: 16px 20px 8px;
+}
+
+.title {
+  font-family: var(--yl-font-display);
+  font-size: 22px;
+}
+
+.body {
+  padding: 8px 20px 16px;
+  flex: 1;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--yl-border);
+}
+
+.button {
+  min-height: 32px;
+  min-width: 72px;
+  padding: 6px 14px;
+  border: 1px solid var(--yl-border);
+  border-radius: var(--yl-radius);
+  background: var(--yl-card);
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--yl-accent);
+  color: var(--yl-accent-text);
+  border-color: var(--yl-accent);
+}
+
+.danger {
+  background: var(--yl-danger);
+  color: #fff;
+  border-color: var(--yl-danger);
+}
