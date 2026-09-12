@@ -2,7 +2,7 @@
 
 Yuli Todo is a personal, offline Windows kanban for tasks. These documents are the source of truth for product behavior, data, interface, theming, and architecture.
 
-This phase is design only (`v0.0.0`). Application source code is out of scope until the implementation phase described in [roadmap.md](roadmap.md). The project is licensed under [MIT](../LICENSE).
+The application now lives in the repository root (`src/`, `src-tauri/`, `locales/`). After implementation started, behavior bugs are fixed in code to match these documents unless a spec change is agreed and updated in the same commit (see [roadmap.md](roadmap.md)). The project is licensed under [MIT](../LICENSE).
 
 ## Language
 

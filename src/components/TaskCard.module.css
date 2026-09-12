@@ -3,6 +3,7 @@
   gap: 8px;
   padding: 12px;
   margin-bottom: 8px;
+  min-height: 32px;
   background: var(--yl-card);
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius-card);

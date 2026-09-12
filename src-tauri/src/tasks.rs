@@ -486,7 +486,10 @@ fn query_ids(conn: &Connection, sql: &str, param: &str) -> Result<Vec<String>, A
 }
 
 pub fn clock_tick(conn: &Connection) -> Result<bool, AppError> {
-    let now = now_utc();
+    clock_tick_at(conn, now_utc())
+}
+
+pub fn clock_tick_at(conn: &Connection, now: DateTime<Utc>) -> Result<bool, AppError> {
     let now_s = format_rfc3339(now);
     let tx = conn.unchecked_transaction()?;
     let mut changed = false;
@@ -547,4 +550,97 @@ pub fn clock_tick(conn: &Connection) -> Result<bool, AppError> {
 
     tx.commit()?;
     Ok(changed)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::db::open_memory;
+    use crate::error::AppError;
+    use crate::prefs::SettingsPatch;
+
+    fn write(name: &str, start_at: Option<String>, end_at: Option<String>) -> TaskWrite {
+        TaskWrite {
+            name: name.into(),
+            type_id: None,
+            content: String::new(),
+            notes: String::new(),
+            tags: vec!["alpha".into()],
+            start_at,
+            end_at,
+        }
+    }
+
+    #[test]
+    fn delete_rejects_active_and_removes_archived() {
+        let conn = open_memory().unwrap();
+        let created = create_task(&conn, write("Keep", None, None)).unwrap();
+        assert!(matches!(
+            delete_task(&conn, &created.id),
+            Err(AppError::NotArchived)
+        ));
+        archive_now(&conn, &created.id).unwrap();
+        delete_task(&conn, &created.id).unwrap();
+        assert!(matches!(get_task(&conn, &created.id), Err(AppError::NotFound)));
+    }
+
+    #[test]
+    fn clock_tick_promotes_marks_overdue_and_auto_archives() {
+        let conn = open_memory().unwrap();
+        crate::prefs::update(
+            &conn,
+            SettingsPatch {
+                archive_after_days: Some(0),
+                locale: None,
+                theme_id: None,
+                color_scheme: None,
+            },
+        )
+        .unwrap();
+        let now = now_utc();
+        let future = format_rfc3339(now + chrono::Duration::hours(2));
+        let scheduled = create_task(&conn, write("Later", Some(future), None)).unwrap();
+        assert_eq!(scheduled.status, "will_do");
+
+        conn.execute(
+            "UPDATE tasks SET start_at = ?1 WHERE id = ?2",
+            params![format_rfc3339(now), scheduled.id],
+        )
+        .unwrap();
+        assert!(clock_tick_at(&conn, now).unwrap());
+        let promoted = get_task(&conn, &scheduled.id).unwrap();
+        assert_eq!(promoted.status, "to_do");
+        assert_eq!(promoted.board_column.as_deref(), Some("todo"));
+
+        let board = create_task(&conn, write("Due soon", None, None)).unwrap();
+        conn.execute(
+            "UPDATE tasks SET end_at = ?1 WHERE id = ?2",
+            params![format_rfc3339(now), board.id],
+        )
+        .unwrap();
+        assert!(clock_tick_at(&conn, now).unwrap());
+        let overdue = get_task(&conn, &board.id).unwrap();
+        assert_eq!(overdue.status, "overdue");
+        assert_eq!(overdue.board_column.as_deref(), Some("todo"));
+
+        let done = create_task(&conn, write("Finished", None, None)).unwrap();
+        move_task(&conn, &done.id, "done").unwrap();
+        let after_done = now_utc();
+        assert!(clock_tick_at(&conn, after_done).unwrap());
+        let archived = get_task(&conn, &done.id).unwrap();
+        assert_eq!(archived.status, "done");
+        assert!(archived.archived_at.is_some());
+    }
+
+    #[test]
+    fn clock_tick_does_not_archive_before_delay() {
+        let conn = open_memory().unwrap();
+        let done = create_task(&conn, write("Wait", None, None)).unwrap();
+        move_task(&conn, &done.id, "done").unwrap();
+        let now = now_utc();
+        assert!(!clock_tick_at(&conn, now).unwrap());
+        let still = get_task(&conn, &done.id).unwrap();
+        assert!(still.archived_at.is_none());
+        assert_eq!(still.board_column.as_deref(), Some("done"));
+    }
 }

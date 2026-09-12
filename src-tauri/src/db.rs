@@ -26,7 +26,15 @@ pub fn open(app: &AppHandle) -> Result<(PathBuf, Connection), AppError> {
     Ok((path, conn))
 }
 
-fn migrate(conn: &Connection) -> rusqlite::Result<()> {
+#[cfg(test)]
+pub(crate) fn open_memory() -> rusqlite::Result<Connection> {
+    let conn = Connection::open_in_memory()?;
+    conn.pragma_update(None, "foreign_keys", true)?;
+    migrate(&conn)?;
+    Ok(conn)
+}
+
+pub(crate) fn migrate(conn: &Connection) -> rusqlite::Result<()> {
     let version: i32 = conn.pragma_query_value(None, "user_version", |row| row.get(0))?;
     if version < 1 {
         conn.execute_batch(

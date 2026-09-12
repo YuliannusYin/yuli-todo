@@ -2,8 +2,8 @@
 
 A personal, offline Windows kanban. Three columns — **To Do**, **Doing**, **Done** — plus Scheduled and Archive. No account. No network.
 
-**Version:** `v0.4.0`  
-**Status:** clock tick, overdue and auto-archive, Archive filters and delete, archive delay setting.
+**Version:** `v0.5.0`  
+**Status:** pre-release Windows app through Roadmap v0.5.0 — themes, i18n, clock, archive, and transition tests.
 
 ## License
 

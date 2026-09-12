@@ -44,6 +44,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [view, setView] = useState<AppView>("board");
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [loading, setLoading] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
   const [storageError, setStorageError] = useState<CommandError | null>(null);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           return;
         }
         setSettings(next);
+        setHydrated(true);
         setStorageError(null);
       })
       .catch((error: unknown) => {
@@ -101,8 +103,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const t = useCallback(
     (key: string, vars?: Record<string, string | number>) =>
-      translate(settings.locale as LocaleId, key, vars),
-    [settings.locale],
+      translate(hydrated ? (settings.locale as LocaleId) : "en", key, vars),
+    [hydrated, settings.locale],
   );
 
   const value = useMemo(
