@@ -44,3 +44,11 @@ export function renameType(id: string, name: string) {
 export function deleteType(id: string) {
   return invoke<void>("delete_type", { id });
 }
+
+export function moveTask(id: string, to_column: string) {
+  return invoke<Task>("move_task", { id, to_column });
+}
+
+export function archiveNow(id: string) {
+  return invoke<Task>("archive_now", { id });
+}

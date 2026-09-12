@@ -8,11 +8,13 @@ import {
   type ReactNode,
 } from "react";
 import {
+  archiveNow,
   createTask,
   createType,
   deleteType,
   listTasks,
   listTypes,
+  moveTask,
   renameType,
   updateTask,
 } from "../lib/ipc";
@@ -21,12 +23,15 @@ import type { Task, TaskType, TaskWrite } from "../lib/types";
 type TaskContextValue = {
   board: Task[];
   scheduled: Task[];
+  archive: Task[];
   types: TaskType[];
   toast: string | null;
   setToast: (message: string | null) => void;
   refresh: () => Promise<void>;
   saveNew: (payload: TaskWrite) => Promise<Task>;
   saveExisting: (id: string, payload: TaskWrite) => Promise<Task>;
+  moveToColumn: (id: string, to: "todo" | "doing" | "done") => Promise<void>;
+  archiveTask: (id: string) => Promise<void>;
   addType: (name: string) => Promise<TaskType>;
   editType: (id: string, name: string) => Promise<void>;
   removeType: (id: string) => Promise<void>;
@@ -37,17 +42,20 @@ const TaskContext = createContext<TaskContextValue | null>(null);
 export function TaskProvider({ children }: { children: ReactNode }) {
   const [board, setBoard] = useState<Task[]>([]);
   const [scheduled, setScheduled] = useState<Task[]>([]);
+  const [archive, setArchive] = useState<Task[]>([]);
   const [types, setTypes] = useState<TaskType[]>([]);
   const [toast, setToast] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
-    const [nextBoard, nextScheduled, nextTypes] = await Promise.all([
+    const [nextBoard, nextScheduled, nextArchive, nextTypes] = await Promise.all([
       listTasks("board"),
       listTasks("scheduled"),
+      listTasks("archive"),
       listTypes(),
     ]);
     setBoard(nextBoard);
     setScheduled(nextScheduled);
+    setArchive(nextArchive);
     setTypes(nextTypes);
   }, []);
 
@@ -78,6 +86,22 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     [refresh],
   );
 
+  const moveToColumn = useCallback(
+    async (id: string, to: "todo" | "doing" | "done") => {
+      await moveTask(id, to);
+      await refresh();
+    },
+    [refresh],
+  );
+
+  const archiveTask = useCallback(
+    async (id: string) => {
+      await archiveNow(id);
+      await refresh();
+    },
+    [refresh],
+  );
+
   const addType = useCallback(async (name: string) => {
     const created = await createType(name);
     await refresh();
@@ -104,12 +128,15 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     () => ({
       board,
       scheduled,
+      archive,
       types,
       toast,
       setToast,
       refresh,
       saveNew,
       saveExisting,
+      moveToColumn,
+      archiveTask,
       addType,
       editType,
       removeType,
@@ -117,11 +144,14 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     [
       board,
       scheduled,
+      archive,
       types,
       toast,
       refresh,
       saveNew,
       saveExisting,
+      moveToColumn,
+      archiveTask,
       addType,
       editType,
       removeType,

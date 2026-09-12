@@ -49,7 +49,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
     getSettings()
-      .then((next) => {
+      .then((next: Settings) => {
         if (cancelled) {
           return;
         }

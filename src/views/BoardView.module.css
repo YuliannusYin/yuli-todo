@@ -66,3 +66,15 @@
   color: var(--yl-accent-text);
   cursor: pointer;
 }
+
+.column[data-over] {
+  outline: 2px solid var(--yl-accent);
+  outline-offset: -2px;
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}

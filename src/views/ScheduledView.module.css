@@ -25,3 +25,10 @@
   color: var(--yl-text-muted);
   margin: 24px 0;
 }
+
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}

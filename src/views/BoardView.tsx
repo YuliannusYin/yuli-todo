@@ -1,9 +1,20 @@
-import { useState } from "react";
-import { Dialog } from "../components/Dialog";
+import {
+  DndContext,
+  PointerSensor,
+  useDraggable,
+  useDroppable,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import { useState, type ReactNode } from "react";
+import { ContextMenu, ContextMenuItem } from "../components/ContextMenu";
+import { Dialog, DialogButton } from "../components/Dialog";
 import { TaskCard } from "../components/TaskCard";
 import { TaskForm } from "../components/TaskForm";
 import { useApp } from "../context/AppContext";
 import { useTasks } from "../context/TaskContext";
+import { useBoardMove } from "../lib/boardMove";
 import { formatDateTime, formatDuration, toLocalInput, toUtcIso } from "../lib/datetime";
 import { isCommandError } from "../lib/errors";
 import type { BoardColumn, Task, TaskDraft } from "../lib/types";
@@ -31,12 +42,61 @@ function toDraft(task: Task): TaskDraft {
   };
 }
 
+function DropColumn({
+  column,
+  children,
+}: {
+  column: BoardColumn;
+  children: ReactNode;
+}) {
+  const { setNodeRef, isOver } = useDroppable({ id: column });
+  return (
+    <section
+      ref={setNodeRef}
+      className={styles.column}
+      data-over={isOver ? true : undefined}
+    >
+      {children}
+    </section>
+  );
+}
+
+function DragCard({
+  task,
+  children,
+}: {
+  task: Task;
+  children: ReactNode;
+}) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: task.id,
+    data: { column: task.board_column },
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      data-dragging={isDragging ? true : undefined}
+    >
+      {children}
+    </div>
+  );
+}
+
 export function BoardView() {
   const { t, settings } = useApp();
-  const { board, types, saveNew, saveExisting, addType, setToast } = useTasks();
+  const { board, types, saveNew, saveExisting, addType, setToast, moveToColumn, archiveTask } =
+    useTasks();
+  const { pendingDone, onDrop, confirmDone, cancelDone } = useBoardMove(moveToColumn);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Task | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [menu, setMenu] = useState<{ x: number; y: number; task: Task } | null>(null);
+  const [archiveTarget, setArchiveTarget] = useState<Task | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+  );
 
   function close() {
     setOpen(false);
@@ -61,51 +121,79 @@ export function BoardView() {
     }
   }
 
+  async function handleDragEnd(event: DragEndEvent) {
+    const overId = event.over?.id;
+    const from = event.active.data.current?.column as BoardColumn | undefined;
+    if (!overId || !from) {
+      return;
+    }
+    const to = String(overId) as BoardColumn;
+    if (!COLUMNS.includes(to)) {
+      return;
+    }
+    await onDrop(String(event.active.id), from, to);
+  }
+
+  const archiveIncomplete = archiveTarget
+    ? !["done", "belated"].includes(archiveTarget.status)
+    : false;
+
   return (
-    <div className={styles.page}>
-      {COLUMNS.map((column) => {
-        const cards = board.filter((task) => task.board_column === column);
-        return (
-          <section key={column} className={styles.column}>
-            <header className={styles.header} data-column-header>
-              <h2 className={styles.title}>{t(`board.column.${column}`)}</h2>
-              <span className={styles.count}>{cards.length}</span>
-            </header>
-            <div className={styles.body}>
-              {cards.length === 0 ? (
-                <p className={styles.empty}>{t(`board.empty.${column}`)}</p>
-              ) : (
-                cards.map((task) => (
-                  <TaskCard
-                    key={task.id}
-                    task={task}
-                    locale={settings.locale}
-                    t={t}
-                    onOpen={(next) => {
-                      setEditing(next);
+    <DndContext sensors={sensors} onDragEnd={(event) => void handleDragEnd(event)}>
+      <div className={styles.page}>
+        {COLUMNS.map((column) => {
+          const cards = board.filter((task) => task.board_column === column);
+          return (
+            <DropColumn key={column} column={column}>
+              <header className={styles.header} data-column-header>
+                <h2 className={styles.title}>{t(`board.column.${column}`)}</h2>
+                <span className={styles.count}>{cards.length}</span>
+              </header>
+              <div className={styles.body}>
+                {cards.length === 0 ? (
+                  <p className={styles.empty}>{t(`board.empty.${column}`)}</p>
+                ) : (
+                  cards.map((task) => (
+                    <div
+                      key={task.id}
+                      onContextMenu={(event) => {
+                        event.preventDefault();
+                        setMenu({ x: event.clientX, y: event.clientY, task });
+                      }}
+                    >
+                      <DragCard task={task}>
+                        <TaskCard
+                          task={task}
+                          locale={settings.locale}
+                          t={t}
+                          onOpen={(next) => {
+                            setEditing(next);
+                            setOpen(true);
+                          }}
+                        />
+                      </DragCard>
+                    </div>
+                  ))
+                )}
+              </div>
+              {column === "todo" ? (
+                <div className={styles.footer}>
+                  <button
+                    type="button"
+                    className={styles.add}
+                    onClick={() => {
+                      setEditing(null);
                       setOpen(true);
                     }}
-                  />
-                ))
-              )}
-            </div>
-            {column === "todo" ? (
-              <div className={styles.footer}>
-                <button
-                  type="button"
-                  className={styles.add}
-                  onClick={() => {
-                    setEditing(null);
-                    setOpen(true);
-                  }}
-                >
-                  {t("board.addTask")}
-                </button>
-              </div>
-            ) : null}
-          </section>
-        );
-      })}
+                  >
+                    {t("board.addTask")}
+                  </button>
+                </div>
+              ) : null}
+            </DropColumn>
+          );
+        })}
+      </div>
       <Dialog
         open={open}
         title={editing ? editing.name : t("dialog.task.createTitle")}
@@ -136,6 +224,67 @@ export function BoardView() {
           onCreateType={addType}
         />
       </Dialog>
-    </div>
+      <Dialog
+        open={Boolean(pendingDone)}
+        title={t("dialog.done.title")}
+        onClose={cancelDone}
+      >
+        <p>{t("dialog.done.body")}</p>
+        <div className={styles.dialogActions}>
+          <DialogButton onClick={cancelDone}>{t("action.cancel")}</DialogButton>
+          <DialogButton variant="primary" onClick={() => void confirmDone()}>
+            {t("dialog.done.confirm")}
+          </DialogButton>
+        </div>
+      </Dialog>
+      <Dialog
+        open={Boolean(archiveTarget)}
+        title={t("dialog.archiveNow.title")}
+        onClose={() => setArchiveTarget(null)}
+      >
+        <p>
+          {archiveIncomplete
+            ? t("dialog.archiveNow.bodyIncomplete")
+            : t("dialog.archiveNow.bodyDone")}
+        </p>
+        <div className={styles.dialogActions}>
+          <DialogButton onClick={() => setArchiveTarget(null)}>
+            {t("action.cancel")}
+          </DialogButton>
+          <DialogButton
+            variant="primary"
+            onClick={() => {
+              if (archiveTarget) {
+                void archiveTask(archiveTarget.id);
+              }
+              setArchiveTarget(null);
+            }}
+          >
+            {t("dialog.archiveNow.confirm")}
+          </DialogButton>
+        </div>
+      </Dialog>
+      {menu ? (
+        <ContextMenu x={menu.x} y={menu.y} onClose={() => setMenu(null)}>
+          <ContextMenuItem
+            onClick={() => {
+              setEditing(menu.task);
+              setOpen(true);
+              setMenu(null);
+            }}
+          >
+            {t("action.openDetails")}
+          </ContextMenuItem>
+          <ContextMenuItem
+            onClick={() => {
+              setArchiveTarget(menu.task);
+              setMenu(null);
+            }}
+          >
+            {t("action.archiveNow")}
+          </ContextMenuItem>
+        </ContextMenu>
+      ) : null}
+    </DndContext>
   );
 }

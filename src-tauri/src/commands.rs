@@ -79,3 +79,13 @@ pub fn rename_type(state: State<AppState>, id: String, name: String) -> Result<T
 pub fn delete_type(state: State<AppState>, id: String) -> Result<(), AppError> {
     with_conn(&state, |conn| crate::tasks::delete_type(conn, &id))
 }
+
+#[tauri::command]
+pub fn move_task(state: State<AppState>, id: String, to_column: String) -> Result<crate::tasks::TaskDto, AppError> {
+    with_conn(&state, |conn| crate::tasks::move_task(conn, &id, &to_column))
+}
+
+#[tauri::command]
+pub fn archive_now(state: State<AppState>, id: String) -> Result<crate::tasks::TaskDto, AppError> {
+    with_conn(&state, |conn| crate::tasks::archive_now(conn, &id))
+}

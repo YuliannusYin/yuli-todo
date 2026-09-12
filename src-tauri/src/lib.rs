@@ -53,7 +53,9 @@ pub fn run() {
             commands::list_types,
             commands::create_type,
             commands::rename_type,
-            commands::delete_type
+            commands::delete_type,
+            commands::move_task,
+            commands::archive_now
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

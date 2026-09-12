@@ -83,7 +83,6 @@ pub fn flush_doing(task: &mut TaskRecord, now: DateTime<Utc>) {
     }
 }
 
-#[allow(dead_code)]
 pub fn start_doing(task: &mut TaskRecord, now: DateTime<Utc>) {
     if task.doing_started_at.is_none() {
         task.doing_started_at = Some(now);
@@ -133,5 +132,65 @@ pub fn apply_time_rules(task: &mut TaskRecord, now: DateTime<Utc>) {
         && !matches!(task.status, Status::Done | Status::Belated)
     {
         task.status = Status::Overdue;
+    }
+}
+
+pub fn apply_column_move(task: &mut TaskRecord, to: Column, now: DateTime<Utc>) -> Result<(), ()> {
+    if task.archived_at.is_some() {
+        return Err(());
+    }
+    let from = task.board_column.ok_or(())?;
+    if from == to {
+        if to == Column::Doing {
+            start_doing(task, now);
+        }
+        return Ok(());
+    }
+    let due = task.end_at.is_some_and(|end| end <= now);
+    let was_overdue = task.status == Status::Overdue;
+    match to {
+        Column::Done => {
+            flush_doing(task, now);
+            task.status = if was_overdue {
+                Status::Belated
+            } else {
+                Status::Done
+            };
+            task.board_column = Some(Column::Done);
+            task.completed_at = Some(now);
+        }
+        Column::Todo => {
+            if from == Column::Doing {
+                flush_doing(task, now);
+            }
+            if from == Column::Done {
+                task.completed_at = None;
+            }
+            task.board_column = Some(Column::Todo);
+            task.status = if due { Status::Overdue } else { Status::ToDo };
+        }
+        Column::Doing => {
+            if from == Column::Done {
+                task.completed_at = None;
+            }
+            task.board_column = Some(Column::Doing);
+            task.status = if due { Status::Overdue } else { Status::Doing };
+            start_doing(task, now);
+        }
+    }
+    Ok(())
+}
+
+pub fn apply_archive_now(task: &mut TaskRecord, now: DateTime<Utc>) {
+    flush_doing(task, now);
+    match task.status {
+        Status::Done | Status::Belated => {
+            task.archived_at = Some(now);
+        }
+        _ => {
+            task.status = Status::ForceEnded;
+            task.completed_at = Some(now);
+            task.archived_at = Some(now);
+        }
     }
 }

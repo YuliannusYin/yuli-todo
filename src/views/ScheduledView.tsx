@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Dialog } from "../components/Dialog";
+import { Dialog, DialogButton } from "../components/Dialog";
+import { ContextMenu, ContextMenuItem } from "../components/ContextMenu";
 import { TaskCard } from "../components/TaskCard";
 import { TaskForm } from "../components/TaskForm";
 import { useApp } from "../context/AppContext";
@@ -31,10 +32,12 @@ function toDraft(task: Task): TaskDraft {
 
 export function ScheduledView() {
   const { t, settings } = useApp();
-  const { scheduled, types, saveNew, saveExisting, addType, setToast } = useTasks();
+  const { scheduled, types, saveNew, saveExisting, addType, setToast, archiveTask } = useTasks();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Task | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [menu, setMenu] = useState<{ x: number; y: number; task: Task } | null>(null);
+  const [archiveTarget, setArchiveTarget] = useState<Task | null>(null);
 
   function close() {
     setOpen(false);
@@ -76,16 +79,23 @@ export function ScheduledView() {
         <p className={styles.empty}>{t("scheduled.empty")}</p>
       ) : (
         scheduled.map((task) => (
-          <TaskCard
+          <div
             key={task.id}
-            task={task}
-            locale={settings.locale}
-            t={t}
-            onOpen={(next) => {
-              setEditing(next);
-              setOpen(true);
+            onContextMenu={(event) => {
+              event.preventDefault();
+              setMenu({ x: event.clientX, y: event.clientY, task });
             }}
-          />
+          >
+            <TaskCard
+              task={task}
+              locale={settings.locale}
+              t={t}
+              onOpen={(next) => {
+                setEditing(next);
+                setOpen(true);
+              }}
+            />
+          </div>
         ))
       )}
       <Dialog
@@ -108,6 +118,50 @@ export function ScheduledView() {
           onCreateType={addType}
         />
       </Dialog>
+      <Dialog
+        open={Boolean(archiveTarget)}
+        title={t("dialog.archiveNow.title")}
+        onClose={() => setArchiveTarget(null)}
+      >
+        <p>{t("dialog.archiveNow.bodyIncomplete")}</p>
+        <div className={styles.dialogActions}>
+          <DialogButton onClick={() => setArchiveTarget(null)}>
+            {t("action.cancel")}
+          </DialogButton>
+          <DialogButton
+            variant="primary"
+            onClick={() => {
+              if (archiveTarget) {
+                void archiveTask(archiveTarget.id);
+              }
+              setArchiveTarget(null);
+            }}
+          >
+            {t("dialog.archiveNow.confirm")}
+          </DialogButton>
+        </div>
+      </Dialog>
+      {menu ? (
+        <ContextMenu x={menu.x} y={menu.y} onClose={() => setMenu(null)}>
+          <ContextMenuItem
+            onClick={() => {
+              setEditing(menu.task);
+              setOpen(true);
+              setMenu(null);
+            }}
+          >
+            {t("action.openDetails")}
+          </ContextMenuItem>
+          <ContextMenuItem
+            onClick={() => {
+              setArchiveTarget(menu.task);
+              setMenu(null);
+            }}
+          >
+            {t("action.archiveNow")}
+          </ContextMenuItem>
+        </ContextMenu>
+      ) : null}
     </div>
   );
 }

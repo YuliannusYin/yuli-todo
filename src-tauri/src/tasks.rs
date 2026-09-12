@@ -3,7 +3,10 @@ use rusqlite::{params, Connection, OptionalExtension};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::domain::{apply_time_rules, place_on_create, Column, Status, TaskRecord};
+use crate::domain::{
+    apply_archive_now, apply_column_move, apply_time_rules, place_on_create, Column, Status,
+    TaskRecord,
+};
 use crate::error::AppError;
 use crate::time::{format_minute, format_rfc3339, now_utc, parse_optional_utc, parse_utc};
 
@@ -410,4 +413,48 @@ pub fn delete_type(conn: &Connection, id: &str) -> Result<(), AppError> {
         return Err(AppError::NotFound);
     }
     Ok(())
+}
+
+fn persist_lifecycle(conn: &Connection, id: &str, record: &TaskRecord, now: DateTime<Utc>) -> Result<(), AppError> {
+    conn.execute(
+        "UPDATE tasks SET status=?1, board_column=?2, doing_elapsed_seconds=?3, doing_started_at=?4,
+         completed_at=?5, archived_at=?6, updated_at=?7 WHERE id=?8",
+        params![
+            record.status.as_str(),
+            record.board_column.map(Column::as_str),
+            record.doing_elapsed_seconds,
+            record.doing_started_at.map(format_rfc3339),
+            record.completed_at.map(format_rfc3339),
+            record.archived_at.map(format_rfc3339),
+            format_rfc3339(now),
+            id
+        ],
+    )?;
+    Ok(())
+}
+
+pub fn move_task(conn: &Connection, id: &str, to_column: &str) -> Result<TaskDto, AppError> {
+    let to = Column::parse(to_column).ok_or_else(|| AppError::Validation {
+        message_key: "error.validation.surface".into(),
+    })?;
+    let mut record = load_record(conn, id)?;
+    let now = now_utc();
+    apply_column_move(&mut record, to, now).map_err(|_| AppError::Validation {
+        message_key: "error.validation.surface".into(),
+    })?;
+    persist_lifecycle(conn, id, &record, now)?;
+    get_task(conn, id)
+}
+
+pub fn archive_now(conn: &Connection, id: &str) -> Result<TaskDto, AppError> {
+    let mut record = load_record(conn, id)?;
+    if record.archived_at.is_some() {
+        return Err(AppError::Validation {
+            message_key: "error.validation.surface".into(),
+        });
+    }
+    let now = now_utc();
+    apply_archive_now(&mut record, now);
+    persist_lifecycle(conn, id, &record, now)?;
+    get_task(conn, id)
 }
