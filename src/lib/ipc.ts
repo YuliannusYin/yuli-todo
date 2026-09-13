@@ -45,8 +45,8 @@ export function deleteType(id: string) {
   return invoke<void>("delete_type", { id });
 }
 
-export function moveTask(id: string, to_column: string) {
-  return invoke<Task>("move_task", { id, to_column });
+export function moveTask(id: string, toColumn: string) {
+  return invoke<Task>("move_task", { id, toColumn });
 }
 
 export function archiveNow(id: string) {
