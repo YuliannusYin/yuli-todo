@@ -1,0 +1,49 @@
+.form {
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 4px;
+}
+
+.label {
+  font-size: 0.8667rem;
+  color: var(--yl-text-muted);
+}
+
+.input,
+.select,
+.textarea {
+  min-height: 2.1333rem;
+  padding: 6px 8px;
+  border: 1px solid var(--yl-border);
+  border-radius: var(--yl-radius);
+  background: var(--yl-card);
+}
+
+.textarea {
+  min-height: 5.8667rem;
+  resize: vertical;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.typeRow {
+  display: flex;
+  gap: 8px;
+}
+
+.typeRow .select {
+  flex: 1;
+}
+
+.readonly {
+  font-size: 0.8667rem;
+  color: var(--yl-text-muted);
+}

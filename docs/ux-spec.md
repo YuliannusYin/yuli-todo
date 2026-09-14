@@ -4,21 +4,21 @@ Visual tokens come from [theming.md](theming.md). Behavior comes from [product-s
 
 ## App shell
 
-The window is a standard desktop frame (not a tiny overlay). Minimum useful size: **1100 × 720**. Below that, columns may scroll internally; the shell must not collapse to a single column in v1.
+The window is a standard desktop frame (not a tiny overlay). Minimum useful size: **880 × 580**. Default size is **1024 × 680**. Below the minimum, columns may scroll internally; the shell must not collapse to a single column.
 
 ```
 +---------------------------------------------------------------+
-|  Yuli Todo          Board   Scheduled   Archive   Settings    |
-+------------+--------------------------------------------------+
-|            |                                                  |
-|  (none)    |              Page body                           |
-|            |                                                  |
-+------------+--------------------------------------------------+
+|  Yuli Todo     Board  Scheduled  Archive  Settings    _ □ ×   |
++---------------------------------------------------------------+
+|                                                               |
+|                         Page body                             |
+|                                                               |
++---------------------------------------------------------------+
 ```
 
 v1 uses a **top nav** of four destinations rather than a dense sidebar. The active route is visually obvious (underline or filled chip, theme-dependent).
 
-The title bar may be OS-native. Theme chrome applies to the webview content; native title bar colors may follow the OS.
+The OS title bar is hidden. Minimize, maximize/restore, and close live in the same top chrome as the product name and nav, themed with `--yl-*` tokens. The brand and the empty stretch of the bar are drag regions (including double-click to maximize). Loading and storage-error states show the same chrome so the window can still be moved or closed.
 
 ## Board
 
@@ -132,7 +132,7 @@ v1 has no “restore” action.
 Grouped sections, not a kitchen-sink grid:
 
 1. **Archive** — numeric input `Archive completed tasks after (days)` with helper text explaining that `0` archives on the next check after completion.
-2. **Appearance** — theme picker (five named preview swatches) and color scheme (`Light`, `Dark`, `Match system`).
+2. **Appearance** — theme picker (five named preview swatches), color scheme (`Light`, `Dark`, `Match system`), and a font-size slider (`12`–`18` px, default `13`). Changing font size scales UI type and control heights immediately.
 3. **Language** — `English`, `简体中文`. Changing language updates UI chrome immediately; it does not translate user task names.
 4. **Task types** — list with rename and delete; add field for a new type name. Delete is disabled when the type is referenced.
 

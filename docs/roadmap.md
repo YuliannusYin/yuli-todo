@@ -32,33 +32,33 @@ First commit. Design-only; no application source.
 - English design docs (product, data, UX, theming, architecture, i18n, vision)
 - Repository files: root README, `.gitignore`, `.gitattributes`, Git message rule
 
-### v0.2.0 — Shell
+### v0.1.0 — Shell
 
 - Tauri 2 + React + TypeScript + Vite scaffold (CSS Modules, no Tailwind)
 - Four views (Board / Scheduled / Archive / Settings), English/Chinese chrome, theme tokens applied to an empty Board
 - Settings persist theme, scheme, locale (SQLite or a stub that the next version replaces)
 
-### v0.3.0 — Tasks without time engine
+### v0.2.0 — Tasks without time engine
 
 - Schema from [data-model.md](data-model.md)
 - Create, edit, list on Board and Scheduled
 - Types and tags
 - Placement by `start_at` at save time
 
-### v0.4.0 — Motion and confirmations
+### v0.3.0 — Motion and confirmations
 
 - Drag between columns
 - Done confirmation
 - Archive now + force ended
 - Reverse drag from Done
 
-### v0.5.0 — Clock and archive
+### v0.4.0 — Clock and archive
 
 - Startup + 60s tick: promote, overdue, auto-archive
 - Archive page, filters, delete confirmation
 - Archive delay setting
 
-### v0.6.0 — Theme and copy complete
+### v0.5.0 — Theme and copy complete
 
 - All five themes, light and dark, system scheme
 - Remaining i18n keys, empty states, error page
@@ -73,8 +73,8 @@ Minor bumps after v1 may add tray, backup export, or restore-from-archive withou
 
 ## Document versus code
 
-Until v0.2.0 exists, **these Markdown files win**. After implementation starts, behavior bugs are fixed in code to match docs, unless a spec change is agreed and the docs are updated in the same change.
+Until v0.1.0 exists, **these Markdown files win**. After implementation starts, behavior bugs are fixed in code to match docs, unless a spec change is agreed and the docs are updated in the same change.
 
 ## Suggested next implementation slice
 
-When coding is allowed: scaffold Tauri, render the three empty columns with `Add task`, and persist one in-memory-then-SQLite task. Do not skip the Done confirmation when drag is added.
+**v0.1.0:** scaffold Tauri, four empty views, theme tokens, and i18n chrome. Do not skip the Done confirmation when drag is added in a later version.

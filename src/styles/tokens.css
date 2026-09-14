@@ -1,0 +1,396 @@
+:root {
+  --yl-bg: #c9c4ba;
+  --yl-surface: #ddd8ce;
+  --yl-card: #ece7dc;
+  --yl-card-hover: #f4efe4;
+  --yl-text: #1b1a17;
+  --yl-text-muted: #5c5850;
+  --yl-border: #9a9488;
+  --yl-accent: #8c4b24;
+  --yl-accent-text: #fff7ef;
+  --yl-danger: #8a1f1f;
+  --yl-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  --yl-radius: 2px;
+  --yl-radius-card: 4px;
+  --yl-font-display: "Barlow Condensed", "IBM Plex Sans", sans-serif;
+  --yl-font-body: "IBM Plex Sans", sans-serif;
+  --yl-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --yl-status-will-do: #7a7468;
+  --yl-status-to-do: #4a4741;
+  --yl-status-doing: #8c4b24;
+  --yl-status-done: #3d5c38;
+  --yl-status-overdue: #a33b12;
+  --yl-status-belated: #8a5a18;
+  --yl-status-force-ended: #5c4038;
+  --yl-status-will-do-text: #fff7ef;
+  --yl-status-to-do-text: #fff7ef;
+  --yl-status-doing-text: #fff7ef;
+  --yl-status-done-text: #f4efe4;
+  --yl-status-overdue-text: #fff7ef;
+  --yl-status-belated-text: #fff7ef;
+  --yl-status-force-ended-text: #fff7ef;
+  --yl-flourish: #25f4ee;
+}
+
+html[data-theme="metal"][data-scheme="light"] {
+  --yl-bg: #c9c4ba;
+  --yl-surface: #ddd8ce;
+  --yl-card: #ece7dc;
+  --yl-card-hover: #f4efe4;
+  --yl-text: #1b1a17;
+  --yl-text-muted: #5c5850;
+  --yl-border: #9a9488;
+  --yl-accent: #8c4b24;
+  --yl-accent-text: #fff7ef;
+  --yl-danger: #8a1f1f;
+  --yl-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  --yl-radius: 2px;
+  --yl-radius-card: 4px;
+  --yl-font-display: "Barlow Condensed", "IBM Plex Sans", sans-serif;
+  --yl-font-body: "IBM Plex Sans", sans-serif;
+  --yl-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --yl-status-will-do: #7a7468;
+  --yl-status-to-do: #4a4741;
+  --yl-status-doing: #8c4b24;
+  --yl-status-done: #3d5c38;
+  --yl-status-overdue: #a33b12;
+  --yl-status-belated: #8a5a18;
+  --yl-status-force-ended: #5c4038;
+  --yl-status-will-do-text: #fff7ef;
+  --yl-status-to-do-text: #fff7ef;
+  --yl-status-doing-text: #fff7ef;
+  --yl-status-done-text: #f4efe4;
+  --yl-status-overdue-text: #fff7ef;
+  --yl-status-belated-text: #fff7ef;
+  --yl-status-force-ended-text: #fff7ef;
+}
+
+html[data-theme="metal"][data-scheme="dark"] {
+  --yl-bg: #16181a;
+  --yl-surface: #1e2225;
+  --yl-card: #2a2f33;
+  --yl-card-hover: #343a40;
+  --yl-text: #e8e2d6;
+  --yl-text-muted: #9aa19a;
+  --yl-border: #4a5157;
+  --yl-accent: #d08a4c;
+  --yl-accent-text: #1b140e;
+  --yl-danger: #e07070;
+  --yl-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+  --yl-radius: 2px;
+  --yl-radius-card: 4px;
+  --yl-font-display: "Barlow Condensed", "IBM Plex Sans", sans-serif;
+  --yl-font-body: "IBM Plex Sans", sans-serif;
+  --yl-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --yl-status-will-do: #8b9298;
+  --yl-status-to-do: #c5c0b5;
+  --yl-status-doing: #d08a4c;
+  --yl-status-done: #7dba74;
+  --yl-status-overdue: #e07a4a;
+  --yl-status-belated: #d4a44a;
+  --yl-status-force-ended: #c4a99a;
+  --yl-status-will-do-text: #16181a;
+  --yl-status-to-do-text: #16181a;
+  --yl-status-doing-text: #1b140e;
+  --yl-status-done-text: #16181a;
+  --yl-status-overdue-text: #16181a;
+  --yl-status-belated-text: #16181a;
+  --yl-status-force-ended-text: #16181a;
+}
+
+html[data-theme="claude"][data-scheme="light"] {
+  --yl-bg: #efe4d6;
+  --yl-surface: #f6eee3;
+  --yl-card: #fff8ef;
+  --yl-card-hover: #fffdf8;
+  --yl-text: #3a2a22;
+  --yl-text-muted: #7a6558;
+  --yl-border: #e0d0c0;
+  --yl-accent: #c45c3e;
+  --yl-accent-text: #fff7f2;
+  --yl-danger: #9b2c2c;
+  --yl-shadow: 0 8px 24px rgba(80, 50, 30, 0.08);
+  --yl-radius: 999px;
+  --yl-radius-card: 12px;
+  --yl-font-display: "Fraunces", "Literata", serif;
+  --yl-font-body: "Literata", serif;
+  --yl-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --yl-status-will-do: #9a8b7c;
+  --yl-status-to-do: #5c4a3e;
+  --yl-status-doing: #c45c3e;
+  --yl-status-done: #4e7a57;
+  --yl-status-overdue: #c0392b;
+  --yl-status-belated: #b56b2a;
+  --yl-status-force-ended: #7a5348;
+  --yl-status-will-do-text: #fff8ef;
+  --yl-status-to-do-text: #fff8ef;
+  --yl-status-doing-text: #fff7f2;
+  --yl-status-done-text: #fff8ef;
+  --yl-status-overdue-text: #fff8ef;
+  --yl-status-belated-text: #fff8ef;
+  --yl-status-force-ended-text: #fff8ef;
+}
+
+html[data-theme="claude"][data-scheme="dark"] {
+  --yl-bg: #1c1612;
+  --yl-surface: #261e18;
+  --yl-card: #322820;
+  --yl-card-hover: #3c3026;
+  --yl-text: #f2e6d8;
+  --yl-text-muted: #b7a394;
+  --yl-border: #4a3c32;
+  --yl-accent: #e07a5f;
+  --yl-accent-text: #2a1610;
+  --yl-danger: #f08a8a;
+  --yl-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --yl-radius: 999px;
+  --yl-radius-card: 12px;
+  --yl-font-display: "Fraunces", "Literata", serif;
+  --yl-font-body: "Literata", serif;
+  --yl-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --yl-status-will-do: #a89888;
+  --yl-status-to-do: #e6d5c4;
+  --yl-status-doing: #e07a5f;
+  --yl-status-done: #8fcaa0;
+  --yl-status-overdue: #f07a6a;
+  --yl-status-belated: #e8b56a;
+  --yl-status-force-ended: #cbb0a4;
+  --yl-status-will-do-text: #1c1612;
+  --yl-status-to-do-text: #1c1612;
+  --yl-status-doing-text: #2a1610;
+  --yl-status-done-text: #1c1612;
+  --yl-status-overdue-text: #1c1612;
+  --yl-status-belated-text: #1c1612;
+  --yl-status-force-ended-text: #1c1612;
+}
+
+html[data-theme="vscode"][data-scheme="light"] {
+  --yl-bg: #f3f3f3;
+  --yl-surface: #ffffff;
+  --yl-card: #ffffff;
+  --yl-card-hover: #f8f8f8;
+  --yl-text: #1e1e1e;
+  --yl-text-muted: #616161;
+  --yl-border: #e5e5e5;
+  --yl-accent: #007acc;
+  --yl-accent-text: #ffffff;
+  --yl-danger: #c72e0f;
+  --yl-shadow: none;
+  --yl-radius: 0px;
+  --yl-radius-card: 2px;
+  --yl-font-display: "Segoe UI Variable", "Segoe UI", "IBM Plex Sans", sans-serif;
+  --yl-font-body: "Segoe UI Variable", "Segoe UI", "IBM Plex Sans", sans-serif;
+  --yl-font-mono: "Cascadia Code", "IBM Plex Mono", ui-monospace, monospace;
+  --yl-status-will-do: #6d6d6d;
+  --yl-status-to-do: #333333;
+  --yl-status-doing: #007acc;
+  --yl-status-done: #388a34;
+  --yl-status-overdue: #c72e0f;
+  --yl-status-belated: #bf8803;
+  --yl-status-force-ended: #7a3e9d;
+  --yl-status-will-do-text: #ffffff;
+  --yl-status-to-do-text: #ffffff;
+  --yl-status-doing-text: #ffffff;
+  --yl-status-done-text: #ffffff;
+  --yl-status-overdue-text: #ffffff;
+  --yl-status-belated-text: #1e1e1e;
+  --yl-status-force-ended-text: #ffffff;
+}
+
+html[data-theme="vscode"][data-scheme="dark"] {
+  --yl-bg: #1e1e1e;
+  --yl-surface: #252526;
+  --yl-card: #2d2d2d;
+  --yl-card-hover: #333333;
+  --yl-text: #cccccc;
+  --yl-text-muted: #9d9d9d;
+  --yl-border: #3c3c3c;
+  --yl-accent: #007acc;
+  --yl-accent-text: #ffffff;
+  --yl-danger: #f14c4c;
+  --yl-shadow: none;
+  --yl-radius: 0px;
+  --yl-radius-card: 2px;
+  --yl-font-display: "Segoe UI Variable", "Segoe UI", "IBM Plex Sans", sans-serif;
+  --yl-font-body: "Segoe UI Variable", "Segoe UI", "IBM Plex Sans", sans-serif;
+  --yl-font-mono: "Cascadia Code", "IBM Plex Mono", ui-monospace, monospace;
+  --yl-status-will-do: #9d9d9d;
+  --yl-status-to-do: #d4d4d4;
+  --yl-status-doing: #3794ff;
+  --yl-status-done: #89d185;
+  --yl-status-overdue: #f14c4c;
+  --yl-status-belated: #cca700;
+  --yl-status-force-ended: #c586c0;
+  --yl-status-will-do-text: #1e1e1e;
+  --yl-status-to-do-text: #1e1e1e;
+  --yl-status-doing-text: #1e1e1e;
+  --yl-status-done-text: #1e1e1e;
+  --yl-status-overdue-text: #1e1e1e;
+  --yl-status-belated-text: #1e1e1e;
+  --yl-status-force-ended-text: #1e1e1e;
+}
+
+html[data-theme="github"][data-scheme="light"] {
+  --yl-bg: #ffffff;
+  --yl-surface: #f6f8fa;
+  --yl-card: #ffffff;
+  --yl-card-hover: #f6f8fa;
+  --yl-text: #1f2328;
+  --yl-text-muted: #59636e;
+  --yl-border: #d0d7de;
+  --yl-accent: #0969da;
+  --yl-accent-text: #ffffff;
+  --yl-danger: #d1242f;
+  --yl-shadow: 0 1px 3px rgba(31, 35, 40, 0.12);
+  --yl-radius: 20px;
+  --yl-radius-card: 6px;
+  --yl-font-display: "Mona Sans", "IBM Plex Sans", sans-serif;
+  --yl-font-body: "Mona Sans", "IBM Plex Sans", sans-serif;
+  --yl-font-mono: "Noto Sans Mono", "IBM Plex Mono", ui-monospace, monospace;
+  --yl-status-will-do: #656d76;
+  --yl-status-to-do: #1f2328;
+  --yl-status-doing: #0969da;
+  --yl-status-done: #1a7f37;
+  --yl-status-overdue: #d1242f;
+  --yl-status-belated: #9a6700;
+  --yl-status-force-ended: #8250df;
+  --yl-status-will-do-text: #ffffff;
+  --yl-status-to-do-text: #ffffff;
+  --yl-status-doing-text: #ffffff;
+  --yl-status-done-text: #ffffff;
+  --yl-status-overdue-text: #ffffff;
+  --yl-status-belated-text: #ffffff;
+  --yl-status-force-ended-text: #ffffff;
+}
+
+html[data-theme="github"][data-scheme="dark"] {
+  --yl-bg: #0d1117;
+  --yl-surface: #161b22;
+  --yl-card: #21262d;
+  --yl-card-hover: #262c36;
+  --yl-text: #f0f6fc;
+  --yl-text-muted: #8b949e;
+  --yl-border: #30363d;
+  --yl-accent: #4493f8;
+  --yl-accent-text: #0d1117;
+  --yl-danger: #f85149;
+  --yl-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --yl-radius: 20px;
+  --yl-radius-card: 6px;
+  --yl-font-display: "Mona Sans", "IBM Plex Sans", sans-serif;
+  --yl-font-body: "Mona Sans", "IBM Plex Sans", sans-serif;
+  --yl-font-mono: "Noto Sans Mono", "IBM Plex Mono", ui-monospace, monospace;
+  --yl-status-will-do: #8b949e;
+  --yl-status-to-do: #e6edf3;
+  --yl-status-doing: #4493f8;
+  --yl-status-done: #3fb950;
+  --yl-status-overdue: #f85149;
+  --yl-status-belated: #d29922;
+  --yl-status-force-ended: #a371f7;
+  --yl-status-will-do-text: #0d1117;
+  --yl-status-to-do-text: #0d1117;
+  --yl-status-doing-text: #0d1117;
+  --yl-status-done-text: #0d1117;
+  --yl-status-overdue-text: #0d1117;
+  --yl-status-belated-text: #0d1117;
+  --yl-status-force-ended-text: #0d1117;
+}
+
+html[data-theme="tiktok"][data-scheme="light"] {
+  --yl-bg: #f2f2f2;
+  --yl-surface: #ffffff;
+  --yl-card: #ffffff;
+  --yl-card-hover: #fff5f7;
+  --yl-text: #161823;
+  --yl-text-muted: #5c5c66;
+  --yl-border: #e6e6e6;
+  --yl-accent: #fe2c55;
+  --yl-accent-text: #ffffff;
+  --yl-danger: #fe2c55;
+  --yl-shadow: 0 4px 16px rgba(22, 24, 35, 0.08);
+  --yl-radius: 8px;
+  --yl-radius-card: 12px;
+  --yl-font-display: "Teko", "Sora", sans-serif;
+  --yl-font-body: "Sora", sans-serif;
+  --yl-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --yl-flourish: #00c2b8;
+  --yl-status-will-do: #8a8a94;
+  --yl-status-to-do: #161823;
+  --yl-status-doing: #00c2b8;
+  --yl-status-done: #00a86b;
+  --yl-status-overdue: #fe2c55;
+  --yl-status-belated: #c44b00;
+  --yl-status-force-ended: #6e6e78;
+  --yl-status-will-do-text: #ffffff;
+  --yl-status-to-do-text: #ffffff;
+  --yl-status-doing-text: #041616;
+  --yl-status-done-text: #ffffff;
+  --yl-status-overdue-text: #ffffff;
+  --yl-status-belated-text: #ffffff;
+  --yl-status-force-ended-text: #ffffff;
+}
+
+html[data-theme="tiktok"][data-scheme="dark"] {
+  --yl-bg: #000000;
+  --yl-surface: #121212;
+  --yl-card: #1c1c1c;
+  --yl-card-hover: #262626;
+  --yl-text: #ffffff;
+  --yl-text-muted: #b0b0b8;
+  --yl-border: #2e2e2e;
+  --yl-accent: #fe2c55;
+  --yl-accent-text: #ffffff;
+  --yl-danger: #fe2c55;
+  --yl-shadow: 0 4px 16px rgba(254, 44, 85, 0.12);
+  --yl-radius: 8px;
+  --yl-radius-card: 12px;
+  --yl-font-display: "Teko", "Sora", sans-serif;
+  --yl-font-body: "Sora", sans-serif;
+  --yl-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --yl-flourish: #25f4ee;
+  --yl-status-will-do: #9a9aa4;
+  --yl-status-to-do: #f5f5f5;
+  --yl-status-doing: #25f4ee;
+  --yl-status-done: #3ee0a0;
+  --yl-status-overdue: #fe2c55;
+  --yl-status-belated: #ff8a3d;
+  --yl-status-force-ended: #c8c8d0;
+  --yl-status-will-do-text: #000000;
+  --yl-status-to-do-text: #000000;
+  --yl-status-doing-text: #041616;
+  --yl-status-done-text: #041616;
+  --yl-status-overdue-text: #ffffff;
+  --yl-status-belated-text: #000000;
+  --yl-status-force-ended-text: #000000;
+}
+
+[data-swatch="metal"] [data-swatch-half="light"] {
+  background: #c9c4ba;
+}
+[data-swatch="metal"] [data-swatch-half="dark"] {
+  background: #16181a;
+}
+[data-swatch="claude"] [data-swatch-half="light"] {
+  background: #efe4d6;
+}
+[data-swatch="claude"] [data-swatch-half="dark"] {
+  background: #1c1612;
+}
+[data-swatch="vscode"] [data-swatch-half="light"] {
+  background: #f3f3f3;
+}
+[data-swatch="vscode"] [data-swatch-half="dark"] {
+  background: #1e1e1e;
+}
+[data-swatch="github"] [data-swatch-half="light"] {
+  background: #ffffff;
+}
+[data-swatch="github"] [data-swatch-half="dark"] {
+  background: #0d1117;
+}
+[data-swatch="tiktok"] [data-swatch-half="light"] {
+  background: #f2f2f2;
+}
+[data-swatch="tiktok"] [data-swatch-half="dark"] {
+  background: #000000;
+}

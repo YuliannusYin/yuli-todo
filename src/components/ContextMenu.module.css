@@ -1,0 +1,25 @@
+.menu {
+  position: fixed;
+  z-index: 30;
+  min-width: 180px;
+  padding: 6px;
+  background: var(--yl-surface);
+  border: 1px solid var(--yl-border);
+  border-radius: var(--yl-radius-card);
+  box-shadow: var(--yl-shadow);
+  display: grid;
+}
+
+.item {
+  min-height: 2.1333rem;
+  text-align: left;
+  padding: 6px 10px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: var(--yl-radius);
+}
+
+.item:hover {
+  background: var(--yl-card-hover);
+}

@@ -44,3 +44,9 @@ $RECYCLE.BIN/
 # Logs
 logs/
 *.log
+
+*.ntvs*
+*.njsproj
+*.sw?
+_cta_tmp/
+

@@ -1,0 +1,30 @@
+.group {
+  display: flex;
+  flex-shrink: 0;
+  height: 3.7333rem;
+}
+
+.btn {
+  appearance: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.9333rem;
+  height: 3.7333rem;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--yl-text);
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.btn:hover {
+  background: var(--yl-card-hover);
+}
+
+.close:hover {
+  background: var(--yl-danger);
+  color: #fff;
+}
