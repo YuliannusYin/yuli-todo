@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useApp } from "../context/AppContext";
 import { useTasks } from "../context/TaskContext";
-import { THEME_IDS, type ColorScheme, type LocaleId } from "../lib/types";
+import {
+  FONT_SIZE_MAX,
+  FONT_SIZE_MIN,
+  THEME_IDS,
+  type ColorScheme,
+  type LocaleId,
+} from "../lib/types";
 import styles from "./SettingsView.module.css";
 
 const SCHEMES: ColorScheme[] = ["light", "dark", "system"];
@@ -33,6 +39,7 @@ export function SettingsView() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.inner}>
       <section className={styles.section}>
         <h2 className={styles.heading}>{t("settings.archive.title")}</h2>
         <label className={styles.label}>
@@ -80,6 +87,27 @@ export function SettingsView() {
             </button>
           ))}
         </div>
+        <div className={styles.label}>{t("settings.appearance.fontSize")}</div>
+        <div className={styles.fontRow}>
+          <input
+            className={styles.slider}
+            type="range"
+            min={FONT_SIZE_MIN}
+            max={FONT_SIZE_MAX}
+            step={1}
+            value={settings.font_size}
+            aria-label={t("settings.appearance.fontSize")}
+            aria-valuemin={FONT_SIZE_MIN}
+            aria-valuemax={FONT_SIZE_MAX}
+            aria-valuenow={settings.font_size}
+            aria-valuetext={t("settings.appearance.fontSizeValue", { size: settings.font_size })}
+            onChange={(event) => void patchSettings({ font_size: Number(event.target.value) })}
+          />
+          <span className={styles.fontValue}>
+            {t("settings.appearance.fontSizeValue", { size: settings.font_size })}
+          </span>
+        </div>
+        <p className={styles.helper}>{t("settings.appearance.fontSizeHelper")}</p>
         <div className={styles.label}>{t("settings.appearance.scheme")}</div>
         <div className={styles.schemes}>
           {SCHEMES.map((scheme) => (
@@ -174,6 +202,7 @@ export function SettingsView() {
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 }

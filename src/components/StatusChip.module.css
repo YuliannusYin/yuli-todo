@@ -1,10 +1,10 @@
 .chip {
   display: inline-flex;
   align-items: center;
-  min-height: 22px;
+  min-height: 1.4667rem;
   padding: 0 8px;
   font-family: var(--yl-font-mono);
-  font-size: 12px;
+  font-size: 0.8rem;
   line-height: 1;
   border-radius: var(--yl-radius);
   white-space: nowrap;

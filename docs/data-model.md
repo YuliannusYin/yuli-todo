@@ -114,6 +114,7 @@ Single-row table (`id = 1`) or key-value store. Required keys:
 | `locale` | TEXT | `en` |
 | `theme_id` | TEXT | `metal` |
 | `color_scheme` | TEXT | `system` |
+| `font_size` | INTEGER | `13` (constraint 12–18) |
 
 Schema version lives in SQLite `user_version` or a `schema_migrations` table. v1 starts at version `1`.
 

@@ -9,7 +9,7 @@ import {
 } from "react";
 import { translate } from "../i18n";
 import { getSettings, updateSettings } from "../lib/ipc";
-import { applyTheme } from "../lib/theme";
+import { applyFontSize, applyTheme } from "../lib/theme";
 import {
   DEFAULT_SETTINGS,
   type AppView,
@@ -83,8 +83,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     applyTheme(settings.theme_id, settings.color_scheme);
+    applyFontSize(settings.font_size);
     document.documentElement.lang = settings.locale;
-  }, [settings.theme_id, settings.color_scheme, settings.locale]);
+  }, [settings.theme_id, settings.color_scheme, settings.locale, settings.font_size]);
 
   useEffect(() => {
     if (settings.color_scheme !== "system") {

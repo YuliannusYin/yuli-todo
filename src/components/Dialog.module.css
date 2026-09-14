@@ -31,7 +31,7 @@
 
 .title {
   font-family: var(--yl-font-display);
-  font-size: 22px;
+  font-size: 1.4667rem;
 }
 
 .body {
@@ -48,7 +48,7 @@
 }
 
 .button {
-  min-height: 32px;
+  min-height: 2.1333rem;
   min-width: 72px;
   padding: 6px 14px;
   border: 1px solid var(--yl-border);

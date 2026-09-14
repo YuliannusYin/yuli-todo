@@ -30,13 +30,13 @@
 
 .title {
   font-family: var(--yl-font-display);
-  font-size: 20px;
+  font-size: 1.3333rem;
   letter-spacing: 0.03em;
 }
 
 .count {
   font-family: var(--yl-font-mono);
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--yl-text-muted);
 }
 
@@ -48,7 +48,7 @@
 
 .empty {
   color: var(--yl-text-muted);
-  font-size: 13px;
+  font-size: 0.8667rem;
   padding: 12px 2px;
 }
 
@@ -59,7 +59,7 @@
 
 .add {
   width: 100%;
-  min-height: 32px;
+  min-height: 2.1333rem;
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius);
   background: var(--yl-accent);

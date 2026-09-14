@@ -3,7 +3,7 @@
   gap: 8px;
   padding: 12px;
   margin-bottom: 8px;
-  min-height: 32px;
+  min-height: 2.1333rem;
   background: var(--yl-card);
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius-card);
@@ -18,7 +18,7 @@
 }
 
 .name {
-  font-size: 16px;
+  font-size: 1.0667rem;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -37,7 +37,7 @@
 .more,
 .time,
 .extra {
-  font-size: 12px;
+  font-size: 0.8rem;
   color: var(--yl-text-muted);
 }
 

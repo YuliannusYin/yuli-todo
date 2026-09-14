@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useApp } from "../context/AppContext";
 import { useTasks } from "../context/TaskContext";
 import type { AppView } from "../lib/types";
+import { TitleBar } from "./TitleBar";
 import styles from "./AppShell.module.css";
 
 const NAV: { id: AppView; key: string }[] = [
@@ -17,8 +18,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className={styles.shell}>
-      <header className={styles.top}>
-        <div className={styles.brand}>{t("app.name")}</div>
+      <TitleBar>
         <nav className={styles.nav} aria-label={t("app.name")}>
           {NAV.map((item) => (
             <button
@@ -33,7 +33,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </button>
           ))}
         </nav>
-      </header>
+      </TitleBar>
       <main className={styles.body}>{children}</main>
       {toast ? (
         <div className={styles.toast} role="status">

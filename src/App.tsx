@@ -1,6 +1,7 @@
 import { AppProvider, useApp } from "./context/AppContext";
 import { TaskProvider } from "./context/TaskContext";
 import { AppShell } from "./components/AppShell";
+import { TitleBar } from "./components/TitleBar";
 import { ArchiveView } from "./views/ArchiveView";
 import { BoardView } from "./views/BoardView";
 import { ScheduledView } from "./views/ScheduledView";
@@ -13,8 +14,11 @@ function Shell() {
 
   if (loading) {
     return (
-      <div className={styles.pulse} aria-hidden="true">
-        <div className={styles.bar} />
+      <div className={styles.frame}>
+        <TitleBar />
+        <div className={styles.pulse} aria-hidden="true">
+          <div className={styles.bar} />
+        </div>
       </div>
     );
   }

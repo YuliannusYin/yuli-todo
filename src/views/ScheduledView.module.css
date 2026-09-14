@@ -12,7 +12,7 @@
 }
 
 .add {
-  min-height: 32px;
+  min-height: 2.1333rem;
   padding: 6px 14px;
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius);

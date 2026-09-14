@@ -4,18 +4,26 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: 13px;
+}
+
 html,
-body,
-#root {
+body {
   height: 100%;
   margin: 0;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
   background: var(--yl-bg);
   color: var(--yl-text);
   font-family: var(--yl-font-body), "Microsoft YaHei UI", "Segoe UI", sans-serif;
-  font-size: 15px;
+  font-size: 1rem;
   line-height: 1.45;
 }
 

@@ -341,6 +341,8 @@ document.documentElement.dataset.scheme = resolvedLightOrDark
 
 `system` resolves with `prefers-color-scheme` and must update live if the OS changes.
 
+Font size is a Settings integer (`12`–`18`, default `13`) applied as `document.documentElement.style.fontSize`. Component type sizes and control min-heights use `rem` so the whole chrome scales with that root size.
+
 Settings shows five swatches (each swatch shows a mini light/dark split) labeled with the English theme names in both locales.
 
 ## What not to do

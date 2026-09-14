@@ -1,5 +1,11 @@
-.pulse {
+.frame {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+}
+
+.pulse {
+  flex: 1;
   display: grid;
   place-items: center;
 }

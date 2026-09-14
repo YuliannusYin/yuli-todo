@@ -594,6 +594,7 @@ mod tests {
                 locale: None,
                 theme_id: None,
                 color_scheme: None,
+                font_size: None,
             },
         )
         .unwrap();

@@ -17,12 +17,12 @@
 .field {
   display: grid;
   gap: 6px;
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--yl-text-muted);
 }
 
 .input {
-  min-height: 32px;
+  min-height: 2.1333rem;
   width: 100%;
   padding: 6px 8px;
   border: 1px solid var(--yl-border);
@@ -33,7 +33,7 @@
 
 .clear,
 .delete {
-  min-height: 32px;
+  min-height: 2.1333rem;
   padding: 6px 12px;
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius);
@@ -63,7 +63,7 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 0.8667rem;
 }
 
 .table th,

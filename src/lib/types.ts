@@ -22,6 +22,7 @@ export type Settings = {
   locale: LocaleId;
   theme_id: ThemeId;
   color_scheme: ColorScheme;
+  font_size: number;
 };
 
 export type SettingsPatch = {
@@ -29,6 +30,7 @@ export type SettingsPatch = {
   locale?: LocaleId;
   theme_id?: ThemeId;
   color_scheme?: ColorScheme;
+  font_size?: number;
 };
 
 export type CommandError = {
@@ -90,9 +92,13 @@ export type TaskDraft = {
 
 export const THEME_IDS: ThemeId[] = ["metal", "claude", "vscode", "github", "tiktok"];
 
+export const FONT_SIZE_MIN = 12;
+export const FONT_SIZE_MAX = 18;
+
 export const DEFAULT_SETTINGS: Settings = {
   archive_after_days: 3,
   locale: "en",
   theme_id: "metal",
   color_scheme: "system",
+  font_size: 13,
 };

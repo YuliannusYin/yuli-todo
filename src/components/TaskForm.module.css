@@ -9,14 +9,14 @@
 }
 
 .label {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--yl-text-muted);
 }
 
 .input,
 .select,
 .textarea {
-  min-height: 32px;
+  min-height: 2.1333rem;
   padding: 6px 8px;
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius);
@@ -24,7 +24,7 @@
 }
 
 .textarea {
-  min-height: 88px;
+  min-height: 5.8667rem;
   resize: vertical;
 }
 
@@ -44,6 +44,6 @@
 }
 
 .readonly {
-  font-size: 13px;
+  font-size: 0.8667rem;
   color: var(--yl-text-muted);
 }

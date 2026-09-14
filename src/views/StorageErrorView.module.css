@@ -1,8 +1,16 @@
-.page {
+.frame {
+  display: flex;
+  flex-direction: column;
   height: 100%;
+}
+
+.page {
+  flex: 1;
   display: grid;
   place-items: center;
   padding: 32px;
+  min-height: 0;
+  overflow: auto;
 }
 
 .card {
@@ -18,19 +26,19 @@
 
 .title {
   font-family: var(--yl-font-display);
-  font-size: 28px;
+  font-size: 1.8667rem;
 }
 
 .path {
   font-family: var(--yl-font-mono);
-  font-size: 13px;
+  font-size: 0.8667rem;
   word-break: break-all;
   color: var(--yl-text-muted);
 }
 
 .quit {
   justify-self: start;
-  min-height: 32px;
+  min-height: 2.1333rem;
   padding: 6px 14px;
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius);

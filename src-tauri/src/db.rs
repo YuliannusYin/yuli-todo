@@ -106,5 +106,15 @@ pub(crate) fn migrate(conn: &Connection) -> rusqlite::Result<()> {
         )?;
         conn.pragma_update(None, "user_version", 2)?;
     }
+    let version: i32 = conn.pragma_query_value(None, "user_version", |row| row.get(0))?;
+    if version < 3 {
+        conn.execute_batch(
+            r#"
+            ALTER TABLE settings ADD COLUMN font_size INTEGER NOT NULL DEFAULT 13
+              CHECK (font_size >= 12 AND font_size <= 18);
+            "#,
+        )?;
+        conn.pragma_update(None, "user_version", 3)?;
+    }
     Ok(())
 }
