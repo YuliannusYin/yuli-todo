@@ -43,6 +43,27 @@ export function isFutureIso(iso: string, now = new Date()): boolean {
   return new Date(iso).getTime() > now.getTime();
 }
 
+export function localDayKey(date: Date): string {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+export function dayDiffFromToday(iso: string, now = new Date()): number {
+  const date = new Date(iso);
+  const day = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  return Math.round((day - today) / 86_400_000);
+}
+
+export function formatDayHeader(iso: string, locale: LocaleId): string {
+  const date = new Date(iso);
+  const formatter = new Intl.DateTimeFormat(locale === "zh-CN" ? "zh-CN" : "en", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+  return formatter.format(date);
+}
+
 export function startOfLocalDay(dateValue: string): number | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateValue);
   if (!match) {

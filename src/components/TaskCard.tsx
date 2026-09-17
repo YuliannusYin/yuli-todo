@@ -1,5 +1,6 @@
 import { formatDateTime, formatDuration } from "../lib/datetime";
 import type { LocaleId, Task } from "../lib/types";
+import { IconCheck, IconClock, IconTimer } from "./icons";
 import { StatusChip } from "./StatusChip";
 import styles from "./TaskCard.module.css";
 
@@ -24,6 +25,7 @@ export function TaskCard({ task, locale, t, onOpen }: TaskCardProps) {
     timeLine = t("card.due", { time: end });
   }
   const showDoneMeta = task.board_column === "done";
+  const timeTone = task.status === "overdue";
 
   return (
     <button
@@ -43,17 +45,28 @@ export function TaskCard({ task, locale, t, onOpen }: TaskCardProps) {
         ))}
         {extraTags ? <span className={styles.more}>+{extraTags}</span> : null}
       </div>
-      {timeLine ? <div className={styles.time}>{timeLine}</div> : null}
-      {showDoneMeta && task.completed_at ? (
-        <div className={styles.extra}>
-          {t("card.completed", { time: formatDateTime(task.completed_at, locale) })}
+      {timeLine ? (
+        <div className={timeTone ? `${styles.time} ${styles.timeOverdue}` : styles.time}>
+          <IconClock size={13} />
+          <span className={styles.timeText}>{timeLine}</span>
         </div>
       ) : null}
       {showDoneMeta ? (
-        <div className={styles.extra}>
-          {t("card.duration", {
-            duration: formatDuration(task.doing_elapsed_seconds, locale),
-          })}
+        <div className={styles.doneMeta}>
+          {task.completed_at ? (
+            <div className={styles.extra}>
+              <IconCheck size={13} />
+              <span>{t("card.completed", { time: formatDateTime(task.completed_at, locale) })}</span>
+            </div>
+          ) : null}
+          <div className={styles.extra}>
+            <IconTimer size={13} />
+            <span>
+              {t("card.duration", {
+                duration: formatDuration(task.doing_elapsed_seconds, locale),
+              })}
+            </span>
+          </div>
         </div>
       ) : null}
     </button>

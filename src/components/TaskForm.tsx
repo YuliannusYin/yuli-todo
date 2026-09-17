@@ -1,7 +1,8 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type KeyboardEvent } from "react";
 import type { TaskDraft, TaskType } from "../lib/types";
 import styles from "./TaskForm.module.css";
 import { DialogButton } from "./Dialog";
+import { IconCheck, IconTimer, IconX, IconAlert } from "./icons";
 
 const EMPTY_DRAFT: TaskDraft = {
   name: "",
@@ -28,6 +29,107 @@ type TaskFormProps = {
   onCreateType?: (name: string) => Promise<TaskType>;
 };
 
+function TagInput({
+  tags,
+  onChange,
+  placeholder,
+  removeLabel,
+}: {
+  tags: string[];
+  onChange: (tags: string[]) => void;
+  placeholder: string;
+  removeLabel: (tag: string) => string;
+}) {
+  const [value, setValue] = useState("");
+
+  function commit(raw: string) {
+    const name = raw.trim().replace(/^,+|,+$/g, "");
+    if (name && !tags.some((tag) => tag.toLowerCase() === name.toLowerCase())) {
+      onChange([...tags, name]);
+    }
+    setValue("");
+  }
+
+  function onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter" || event.key === ",") {
+      event.preventDefault();
+      commit(value);
+    } else if (event.key === "Backspace" && value === "" && tags.length) {
+      onChange(tags.slice(0, -1));
+    }
+  }
+
+  return (
+    <div className={styles.tagBox}>
+      {tags.map((tag) => (
+        <span key={tag} className={styles.tagChip}>
+          {tag}
+          <button
+            type="button"
+            className={styles.tagRemove}
+            aria-label={removeLabel(tag)}
+            onClick={() => onChange(tags.filter((item) => item !== tag))}
+          >
+            <IconX size={11} />
+          </button>
+        </span>
+      ))}
+      <input
+        className={styles.tagInput}
+        value={value}
+        placeholder={tags.length ? "" : placeholder}
+        onChange={(event) => {
+          const next = event.target.value;
+          if (next.includes(",")) {
+            for (const part of next.split(",")) {
+              if (part.trim()) {
+                commit(part);
+              }
+            }
+            return;
+          }
+          setValue(next);
+        }}
+        onKeyDown={onKeyDown}
+        onBlur={() => value.trim() && commit(value)}
+      />
+    </div>
+  );
+}
+
+function ClearableDateInput({
+  value,
+  onChange,
+  clearLabel,
+}: {
+  value: string | null;
+  onChange: (value: string | null) => void;
+  clearLabel: string;
+}) {
+  return (
+    <div className={styles.dateField}>
+      <input
+        className={styles.input}
+        type="datetime-local"
+        step={60}
+        value={value ?? ""}
+        onChange={(event) => onChange(event.target.value || null)}
+      />
+      {value ? (
+        <button
+          type="button"
+          className={styles.dateClear}
+          aria-label={clearLabel}
+          title={clearLabel}
+          onClick={() => onChange(null)}
+        >
+          <IconX size={12} />
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
 export function TaskForm({
   t,
   types,
@@ -43,16 +145,11 @@ export function TaskForm({
   onCreateType,
 }: TaskFormProps) {
   const [draft, setDraft] = useState<TaskDraft>(initial ?? EMPTY_DRAFT);
-  const [tagText, setTagText] = useState((initial?.tags ?? []).join(", "));
   const [newTypeName, setNewTypeName] = useState("");
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    const tags = tagText
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-    onSubmit({ ...draft, tags, name: draft.name.trim() });
+    onSubmit({ ...draft, name: draft.name.trim() });
   }
 
   return (
@@ -67,6 +164,7 @@ export function TaskForm({
           }
           required
           maxLength={200}
+          autoFocus
         />
       </label>
       <label className={styles.field}>
@@ -127,14 +225,15 @@ export function TaskForm({
           maxLength={20000}
         />
       </label>
-      <label className={styles.field}>
+      <div className={styles.field}>
         <span className={styles.label}>{t("field.tags")}</span>
-        <input
-          className={styles.input}
-          value={tagText}
-          onChange={(event) => setTagText(event.target.value)}
+        <TagInput
+          tags={draft.tags}
+          onChange={(tags) => setDraft((current) => ({ ...current, tags }))}
+          placeholder={t("field.tagsPlaceholder")}
+          removeLabel={(tag) => t("tag.remove", { tag })}
         />
-      </label>
+      </div>
       <label className={styles.field}>
         <span className={styles.label}>{t("field.notes")}</span>
         <textarea
@@ -147,49 +246,46 @@ export function TaskForm({
         />
       </label>
       <div className={styles.row}>
-        <label className={styles.field}>
+        <div className={styles.field}>
           <span className={styles.label}>{t("field.startAt")}</span>
-          <input
-            className={styles.input}
-            type="datetime-local"
-            step={60}
-            value={draft.start_at ?? ""}
-            onChange={(event) =>
-              setDraft((current) => ({
-                ...current,
-                start_at: event.target.value || null,
-              }))
-            }
+          <ClearableDateInput
+            value={draft.start_at}
+            onChange={(start_at) => setDraft((current) => ({ ...current, start_at }))}
+            clearLabel={t("action.clear")}
           />
-        </label>
-        <label className={styles.field}>
+        </div>
+        <div className={styles.field}>
           <span className={styles.label}>{t("field.endAt")}</span>
-          <input
-            className={styles.input}
-            type="datetime-local"
-            step={60}
-            value={draft.end_at ?? ""}
-            onChange={(event) =>
-              setDraft((current) => ({
-                ...current,
-                end_at: event.target.value || null,
-              }))
-            }
+          <ClearableDateInput
+            value={draft.end_at}
+            onChange={(end_at) => setDraft((current) => ({ ...current, end_at }))}
+            clearLabel={t("action.clear")}
           />
-        </label>
+        </div>
       </div>
-      {completedAt ? (
-        <p className={styles.readonly}>
-          {t("card.completed", { time: completedAt })}
+      {completedAt || durationLabel ? (
+        <div className={styles.readonlyBox}>
+          {completedAt ? (
+            <div className={styles.readonlyRow}>
+              <IconCheck size={13} />
+              <span>{t("card.completed", { time: completedAt })}</span>
+            </div>
+          ) : null}
+          {durationLabel ? (
+            <div className={styles.readonlyRow}>
+              <IconTimer size={13} />
+              <span>{t("card.duration", { duration: durationLabel })}</span>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+      {error ? (
+        <p className={styles.error} role="alert">
+          <IconAlert size={14} />
+          <span>{error}</span>
         </p>
       ) : null}
-      {durationLabel ? (
-        <p className={styles.readonly}>
-          {t("card.duration", { duration: durationLabel })}
-        </p>
-      ) : null}
-      {error ? <p className={styles.readonly}>{error}</p> : null}
-      <div className={styles.row}>
+      <div className={styles.actions}>
         <DialogButton onClick={onCancel}>{cancelLabel}</DialogButton>
         <DialogButton type="submit" variant="primary">
           {submitLabel}

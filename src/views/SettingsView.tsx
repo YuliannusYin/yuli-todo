@@ -77,6 +77,7 @@ export function SettingsView() {
               className={styles.swatch}
               data-swatch={id}
               data-active={settings.theme_id === id ? true : undefined}
+              aria-pressed={settings.theme_id === id}
               onClick={() => void patchSettings({ theme_id: id })}
             >
               <span className={styles.split}>
@@ -116,6 +117,7 @@ export function SettingsView() {
               type="button"
               className={styles.schemeBtn}
               data-active={settings.color_scheme === scheme ? true : undefined}
+              aria-pressed={settings.color_scheme === scheme}
               onClick={() => void patchSettings({ color_scheme: scheme })}
             >
               {t(`settings.appearance.${scheme}`)}
@@ -133,6 +135,7 @@ export function SettingsView() {
               type="button"
               className={styles.localeBtn}
               data-active={settings.locale === locale ? true : undefined}
+              aria-pressed={settings.locale === locale}
               onClick={() => void patchSettings({ locale })}
             >
               {locale === "en" ? t("settings.language.en") : t("settings.language.zhCN")}
@@ -157,8 +160,12 @@ export function SettingsView() {
               <button
                 type="button"
                 className={styles.schemeBtn}
+                disabled={
+                  (drafts[type.id] ?? type.name).trim() === "" ||
+                  (drafts[type.id] ?? type.name).trim() === type.name
+                }
                 onClick={() =>
-                  void editType(type.id, drafts[type.id] ?? type.name).then(() =>
+                  void editType(type.id, (drafts[type.id] ?? type.name).trim()).then(() =>
                     setDrafts((current) => {
                       const next = { ...current };
                       delete next[type.id];

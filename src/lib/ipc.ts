@@ -1,5 +1,16 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invoke as tauriInvoke } from "@tauri-apps/api/core";
 import type { Settings, SettingsPatch, Task, TaskType, TaskWrite } from "./types";
+
+const hasTauriHost =
+  typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+
+async function invoke<T>(command: string, args?: Record<string, unknown>): Promise<T> {
+  if (import.meta.env.DEV && !hasTauriHost) {
+    const { mockInvoke } = await import("./devMock");
+    return (await mockInvoke(command, args)) as T;
+  }
+  return tauriInvoke<T>(command, args);
+}
 
 export function getSettings() {
   return invoke<Settings>("get_settings");

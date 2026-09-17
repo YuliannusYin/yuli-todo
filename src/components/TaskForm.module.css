@@ -1,31 +1,46 @@
 .form {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .field {
   display: grid;
-  gap: 4px;
+  gap: 5px;
+  min-width: 0;
 }
 
 .label {
   font-size: 0.8667rem;
+  font-weight: 500;
   color: var(--yl-text-muted);
 }
 
 .input,
 .select,
 .textarea {
-  min-height: 2.1333rem;
-  padding: 6px 8px;
+  min-height: var(--yl-control-h);
+  padding: 6px 10px;
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius);
   background: var(--yl-card);
+  color: var(--yl-text);
+  transition:
+    border-color var(--yl-duration-1) var(--yl-ease),
+    box-shadow var(--yl-duration-1) var(--yl-ease);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--yl-accent);
+  box-shadow: 0 0 0 3px var(--yl-accent-soft);
 }
 
 .textarea {
   min-height: 5.8667rem;
   resize: vertical;
+  line-height: 1.5;
 }
 
 .row {
@@ -41,9 +56,131 @@
 
 .typeRow .select {
   flex: 1;
+  min-width: 0;
 }
 
-.readonly {
-  font-size: 0.8667rem;
+.tagBox {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--yl-control-h);
+  padding: 5px 8px;
+  border: 1px solid var(--yl-border);
+  border-radius: var(--yl-radius);
+  background: var(--yl-card);
+  transition:
+    border-color var(--yl-duration-1) var(--yl-ease),
+    box-shadow var(--yl-duration-1) var(--yl-ease);
+}
+
+.tagBox:focus-within {
+  border-color: var(--yl-accent);
+  box-shadow: 0 0 0 3px var(--yl-accent-soft);
+}
+
+.tagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 4px 1px 8px;
+  font-family: var(--yl-font-mono);
+  font-size: 0.75rem;
+  color: var(--yl-text);
+  background: var(--yl-chip-bg);
+  border: 1px solid var(--yl-chip-border);
+  border-radius: var(--yl-radius);
+}
+
+.tagRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2rem;
+  height: 1.2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--yl-radius);
+  background: transparent;
   color: var(--yl-text-muted);
+  cursor: pointer;
+}
+
+.tagRemove:hover {
+  background: var(--yl-danger-soft);
+  color: var(--yl-danger);
+}
+
+.tagInput {
+  flex: 1;
+  min-width: 8rem;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--yl-text);
+  min-height: 1.7rem;
+}
+
+.dateField {
+  position: relative;
+}
+
+.dateField .input {
+  width: 100%;
+  padding-right: 2rem;
+}
+
+.dateClear {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: var(--yl-radius);
+  background: transparent;
+  color: var(--yl-text-muted);
+  cursor: pointer;
+}
+
+.dateClear:hover {
+  background: var(--yl-chip-bg);
+  color: var(--yl-text);
+}
+
+.readonlyBox {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--yl-radius);
+  background: var(--yl-chip-bg);
+  color: var(--yl-text-muted);
+}
+
+.readonlyRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--yl-font-mono);
+  font-size: 0.78rem;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--yl-danger);
+  font-size: 0.8667rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
 }

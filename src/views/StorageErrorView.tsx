@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { TitleBar } from "../components/TitleBar";
+import { IconAlert } from "../components/icons";
 import { useApp } from "../context/AppContext";
 import { getStorageInfo } from "../lib/ipc";
 import type { CommandError } from "../lib/types";
@@ -25,8 +26,11 @@ export function StorageErrorView({ error }: { error: CommandError }) {
       <TitleBar />
       <div className={styles.page}>
         <div className={styles.card}>
+          <span className={styles.icon}>
+            <IconAlert size={22} />
+          </span>
           <h1 className={styles.title}>{t("error.storage.title")}</h1>
-          <p>{t(error.messageKey)}</p>
+          <p className={styles.bodyText}>{t(error.messageKey)}</p>
           {path ? <p className={styles.path}>{t("error.storage.path", { path })}</p> : null}
           <button
             type="button"
