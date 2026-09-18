@@ -1,10 +1,10 @@
 .bar {
   display: flex;
   align-items: stretch;
-  height: 3.7333rem;
-  min-height: 3.7333rem;
+  height: var(--yl-header-h);
+  min-height: var(--yl-header-h);
   width: 100%;
-  padding-left: 1.3333rem;
+  padding-left: var(--yl-space-4);
   background: var(--yl-surface);
   border-bottom: 1px solid var(--yl-border);
   user-select: none;
@@ -15,12 +15,32 @@
 .brand {
   display: flex;
   align-items: center;
+  gap: var(--yl-space-3);
   flex-shrink: 0;
+  padding-right: var(--yl-space-4);
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--yl-radius-card);
+  background: var(--yl-accent);
+  color: var(--yl-accent-text);
   font-family: var(--yl-font-display);
-  font-size: 1.4667rem;
-  letter-spacing: 0.04em;
+  font-size: 1.3333rem;
+  line-height: 1;
+  padding-bottom: 1px;
+}
+
+.wordmark {
+  font-family: var(--yl-font-display);
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
   white-space: nowrap;
-  padding-right: 1.2rem;
+  color: var(--yl-text);
 }
 
 .spacer {

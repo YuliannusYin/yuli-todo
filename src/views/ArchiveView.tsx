@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Dialog, DialogButton } from "../components/Dialog";
+import { IconArchive, IconSearch, IconTrash, IconX } from "../components/icons";
 import { StatusChip } from "../components/StatusChip";
 import { useApp } from "../context/AppContext";
 import { useTasks } from "../context/TaskContext";
@@ -105,17 +106,17 @@ export function ArchiveView() {
 
   return (
     <div className={styles.page}>
-      <form
-        className={styles.filters}
-        onSubmit={(event) => event.preventDefault()}
-      >
+      <form className={styles.filters} onSubmit={(event) => event.preventDefault()}>
         <label className={styles.field}>
           {t("archive.filter.search")}
-          <input
-            className={styles.input}
-            value={filters.search}
-            onChange={(event) => patch({ search: event.target.value })}
-          />
+          <span className={styles.searchBox}>
+            <IconSearch size={14} />
+            <input
+              className={styles.searchInput}
+              value={filters.search}
+              onChange={(event) => patch({ search: event.target.value })}
+            />
+          </span>
         </label>
         <label className={styles.field}>
           {t("archive.filter.status")}
@@ -186,77 +187,108 @@ export function ArchiveView() {
             className={styles.clear}
             onClick={() => setFilters(EMPTY_FILTERS)}
           >
+            <IconX size={13} />
             {t("archive.clearFilters")}
           </button>
         ) : null}
       </form>
 
       {archive.length === 0 ? (
-        <p className={styles.empty}>{t("archive.empty")}</p>
-      ) : filtered.length === 0 ? (
-        <p className={styles.empty}>{t("archive.noMatches")}</p>
-      ) : (
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>{t("archive.col.name")}</th>
-                <th>{t("archive.col.status")}</th>
-                <th>{t("archive.col.type")}</th>
-                <th>{t("archive.col.tags")}</th>
-                <th>{t("archive.col.completed")}</th>
-                <th>{t("archive.col.duration")}</th>
-                <th>{t("archive.col.archived")}</th>
-                <th>{t("archive.col.actions")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((task) => (
-                <tr key={task.id}>
-                  <td>{task.name}</td>
-                  <td>
-                    <StatusChip status={task.status} label={t(`status.${task.status}`)} />
-                  </td>
-                  <td>{task.type_name ?? t("field.none")}</td>
-                  <td>
-                    {task.tags.length
-                      ? task.tags.map((tag) => tag.name).join(", ")
-                      : t("field.none")}
-                  </td>
-                  <td>
-                    {task.completed_at
-                      ? formatDateTime(task.completed_at, settings.locale)
-                      : t("field.none")}
-                  </td>
-                  <td>{formatDuration(task.doing_elapsed_seconds, settings.locale)}</td>
-                  <td>
-                    {task.archived_at
-                      ? formatDateTime(task.archived_at, settings.locale)
-                      : t("field.none")}
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      className={styles.delete}
-                      onClick={() => {
-                        setError(null);
-                        setPendingId(task.id);
-                      }}
-                    >
-                      {t("action.delete")}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className={styles.empty}>
+          <span className={styles.emptyIcon}>
+            <IconArchive size={20} />
+          </span>
+          <p className={styles.emptyText}>{t("archive.empty")}</p>
         </div>
+      ) : filtered.length === 0 ? (
+        <div className={styles.empty}>
+          <span className={styles.emptyIcon}>
+            <IconSearch size={20} />
+          </span>
+          <p className={styles.emptyText}>{t("archive.noMatches")}</p>
+          <button
+            type="button"
+            className={styles.emptyClear}
+            onClick={() => setFilters(EMPTY_FILTERS)}
+          >
+            {t("archive.clearFilters")}
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className={styles.resultBar}>
+            {filtering
+              ? t("archive.countFiltered", { shown: filtered.length, total: archive.length })
+              : t("archive.count", { count: filtered.length })}
+          </div>
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>{t("archive.col.name")}</th>
+                  <th>{t("archive.col.status")}</th>
+                  <th>{t("archive.col.type")}</th>
+                  <th>{t("archive.col.tags")}</th>
+                  <th>{t("archive.col.completed")}</th>
+                  <th>{t("archive.col.duration")}</th>
+                  <th>{t("archive.col.archived")}</th>
+                  <th>{t("archive.col.actions")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((task) => (
+                  <tr key={task.id}>
+                    <td className={styles.nameCell}>{task.name}</td>
+                    <td>
+                      <StatusChip status={task.status} label={t(`status.${task.status}`)} />
+                    </td>
+                    <td>{task.type_name ?? t("field.none")}</td>
+                    <td>
+                      {task.tags.length
+                        ? task.tags.map((tag) => tag.name).join(", ")
+                        : t("field.none")}
+                    </td>
+                    <td className={styles.monoCell}>
+                      {task.completed_at
+                        ? formatDateTime(task.completed_at, settings.locale)
+                        : t("field.none")}
+                    </td>
+                    <td className={styles.monoCell}>
+                      {formatDuration(task.doing_elapsed_seconds, settings.locale)}
+                    </td>
+                    <td className={styles.monoCell}>
+                      {task.archived_at
+                        ? formatDateTime(task.archived_at, settings.locale)
+                        : t("field.none")}
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className={styles.delete}
+                        aria-label={t("action.delete")}
+                        title={t("action.delete")}
+                        onClick={() => {
+                          setError(null);
+                          setPendingId(task.id);
+                        }}
+                      >
+                        <IconTrash size={14} />
+                        <span>{t("action.delete")}</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       <Dialog
         open={Boolean(pending)}
         title={t("dialog.delete.title")}
         onClose={() => setPendingId(null)}
+        closeLabel={t("action.close")}
       >
         <p>{t("dialog.delete.body")}</p>
         {error ? <p className={styles.error}>{error}</p> : null}

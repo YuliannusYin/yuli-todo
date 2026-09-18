@@ -1,7 +1,9 @@
 import {
   DndContext,
+  DragOverlay,
   PointerSensor,
   useDraggable,
+  useDndContext,
   useDroppable,
   useSensor,
   useSensors,
@@ -10,6 +12,7 @@ import {
 import { useState, type ReactNode } from "react";
 import { ContextMenu, ContextMenuItem } from "../components/ContextMenu";
 import { Dialog, DialogButton } from "../components/Dialog";
+import { IconCheck, IconInbox, IconPlay, IconPlus } from "../components/icons";
 import { TaskCard } from "../components/TaskCard";
 import { TaskForm } from "../components/TaskForm";
 import { useApp } from "../context/AppContext";
@@ -17,7 +20,7 @@ import { useTasks } from "../context/TaskContext";
 import { useBoardMove } from "../lib/boardMove";
 import { formatDateTime, formatDuration, toLocalInput, toUtcIso } from "../lib/datetime";
 import { isCommandError } from "../lib/errors";
-import type { BoardColumn, Task, TaskDraft } from "../lib/types";
+import type { BoardColumn, LocaleId, Task, TaskDraft } from "../lib/types";
 import styles from "./BoardView.module.css";
 
 const COLUMNS: BoardColumn[] = ["todo", "doing", "done"];
@@ -54,6 +57,7 @@ function DropColumn({
     <section
       ref={setNodeRef}
       className={styles.column}
+      data-column
       data-over={isOver ? true : undefined}
     >
       {children}
@@ -84,6 +88,33 @@ function DragCard({
   );
 }
 
+function BoardDragOverlay({
+  tasks,
+  locale,
+  t,
+}: {
+  tasks: Task[];
+  locale: LocaleId;
+  t: (key: string) => string;
+}) {
+  const { active } = useDndContext();
+  if (!active) {
+    return null;
+  }
+  const task = tasks.find((item) => item.id === String(active.id));
+  if (!task) {
+    return null;
+  }
+  const width = active.rect.current.initial?.width;
+  return (
+    <DragOverlay dropAnimation={null}>
+      <div data-drag-overlay style={width ? { width } : undefined}>
+        <TaskCard task={task} locale={locale} t={t} onOpen={() => undefined} />
+      </div>
+    </DragOverlay>
+  );
+}
+
 export function BoardView() {
   const { t, settings } = useApp();
   const { board, types, saveNew, saveExisting, addType, setToast, moveToColumn, archiveTask } =
@@ -97,6 +128,11 @@ export function BoardView() {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
   );
+
+  function openCreate() {
+    setEditing(null);
+    setOpen(true);
+  }
 
   function close() {
     setOpen(false);
@@ -146,12 +182,37 @@ export function BoardView() {
           return (
             <DropColumn key={column} column={column}>
               <header className={styles.header} data-column-header>
-                <h2 className={styles.title}>{t(`board.column.${column}`)}</h2>
-                <span className={styles.count}>{cards.length}</span>
+                <div className={styles.headerRow}>
+                  <h2 className={styles.title}>{t(`board.column.${column}`)}</h2>
+                  <span className={styles.count} data-count>
+                    {cards.length}
+                  </span>
+                </div>
               </header>
-              <div className={styles.body}>
+              <div className={styles.body} data-column-body={column}>
                 {cards.length === 0 ? (
-                  <p className={styles.empty}>{t(`board.empty.${column}`)}</p>
+                  <div className={styles.empty}>
+                    <span className={styles.emptyIcon}>
+                      {column === "todo" ? (
+                        <IconInbox size={20} />
+                      ) : column === "doing" ? (
+                        <IconPlay size={20} />
+                      ) : (
+                        <IconCheck size={20} />
+                      )}
+                    </span>
+                    <span className={styles.emptyText}>{t(`board.empty.${column}`)}</span>
+                    {column === "todo" ? (
+                      <button
+                        type="button"
+                        className={styles.emptyAdd}
+                        onClick={openCreate}
+                      >
+                        <IconPlus size={14} />
+                        {t("board.addTask")}
+                      </button>
+                    ) : null}
+                  </div>
                 ) : (
                   cards.map((task) => (
                     <div
@@ -178,14 +239,8 @@ export function BoardView() {
               </div>
               {column === "todo" ? (
                 <div className={styles.footer}>
-                  <button
-                    type="button"
-                    className={styles.add}
-                    onClick={() => {
-                      setEditing(null);
-                      setOpen(true);
-                    }}
-                  >
+                  <button type="button" className={styles.add} onClick={openCreate}>
+                    <IconPlus size={15} />
                     {t("board.addTask")}
                   </button>
                 </div>
@@ -194,11 +249,13 @@ export function BoardView() {
           );
         })}
       </div>
+      <BoardDragOverlay tasks={board} locale={settings.locale} t={t} />
       <Dialog
         open={open}
         title={editing ? editing.name : t("dialog.task.createTitle")}
         onClose={close}
         size="large"
+        closeLabel={t("action.close")}
       >
         <TaskForm
           key={editing?.id ?? "new"}
@@ -228,6 +285,7 @@ export function BoardView() {
         open={Boolean(pendingDone)}
         title={t("dialog.done.title")}
         onClose={cancelDone}
+        closeLabel={t("action.close")}
       >
         <p>{t("dialog.done.body")}</p>
         <div className={styles.dialogActions}>
@@ -241,6 +299,7 @@ export function BoardView() {
         open={Boolean(archiveTarget)}
         title={t("dialog.archiveNow.title")}
         onClose={() => setArchiveTarget(null)}
+        closeLabel={t("action.close")}
       >
         <p>
           {archiveIncomplete

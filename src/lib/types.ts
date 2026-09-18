@@ -1,4 +1,4 @@
-export type AppView = "board" | "scheduled" | "archive" | "settings";
+export type AppView = "board" | "scheduled" | "archive" | "reports" | "settings";
 
 export type ThemeId = "metal" | "claude" | "vscode" | "github" | "tiktok";
 

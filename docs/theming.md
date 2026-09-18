@@ -40,6 +40,22 @@ Do not use Inter, Roboto, Arial, Space Grotesk, or a purple-on-white default pal
 
 Fonts may be self-hosted. No font CDN and no runtime network fetch.
 
+## Structural tokens
+
+In addition to the color tokens above, a single set of structural tokens is defined once in `tokens.css` and re-resolved per theme via `color-mix`:
+
+- Tints: `--yl-accent-soft` (14%), `--yl-accent-softer` (8%), `--yl-danger-soft` (12%)
+- Neutrals: `--yl-track`, `--yl-track-deep`, `--yl-chip-bg`, `--yl-chip-border`, `--yl-overlay`, `--yl-focus`
+- Elevation: `--yl-shadow-pop` (dialogs, menus, drag overlay), `--yl-shadow-card-hover`
+- Sizing: `--yl-control-h`, `--yl-header-h`, `--yl-space-1` … `--yl-space-6`
+- Motion: `--yl-duration-1/2/3`, `--yl-ease`, `--yl-ease-out`; keyframes `yl-fade-in`, `yl-rise`, `yl-toast-in`, `yl-menu-in`, `yl-pulse-bar`
+
+Theme personality beyond colors lives in `global.css` against `data-*` hooks (`data-nav`, `data-column`, `data-column-header`, `data-count`, `data-card`, `data-brand-mark`, `data-drag-overlay`). Components stay free of theme branches.
+
+All icons are inline stroke SVGs (`src/components/icons.tsx`) that inherit `currentColor`; there are no icon font files or network icon assets.
+
+Default-theme woff2 files (Metal: Barlow Condensed, IBM Plex Sans weights, IBM Plex Mono) are `<link rel="preload">`ed in `index.html` to prevent first-paint FOUT.
+
 ---
 
 ## Metal (`metal`)

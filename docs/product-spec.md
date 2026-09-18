@@ -4,13 +4,14 @@ This document defines user-visible behavior for Yuli Todo v1. Storage details li
 
 ## Surfaces
 
-The app has four primary pages:
+The app has five primary pages:
 
 | Page | Shows | Purpose |
 | --- | --- | --- |
 | Board | Non-archived tasks in columns To Do, Doing, Done | Daily work |
 | Scheduled | Non-archived tasks with status `will_do` | Work that must not appear yet |
 | Archive | Tasks with `archived_at` set | History and deletion |
+| Reports | Aggregated completions, Doing duration, type/tag splits, and current board backlog | Review a period of finished work |
 | Settings | App preferences and type list | Archive delay, language, theme, types |
 
 There is no login screen and no network error screen.
@@ -195,6 +196,64 @@ Each row shows completion time and duration (including `force_ended` and includi
 Users can filter by status (`done`, `belated`, `force_ended`), type, tag, and archived date range, and can search by name.
 
 v1 does not restore archived tasks to the Board.
+
+## Reports
+
+The Reports page reviews finished work for a chosen local-calendar period. It does not list individual tasks (Archive does that) and it does not change any task.
+
+### Period
+
+Four presets, default **this week**:
+
+| Preset | Local range | Trend buckets |
+| --- | --- | --- |
+| This week | Monday 00:00 through Sunday 23:59:59 (ISO week) | One bar per day, including days not yet reached (value `0`) |
+| This month | First through last day of the current month | One bar per day of the month |
+| This year | 1 January through 31 December | One bar per month |
+| Custom | Inclusive `from` / `to` dates; switching to Custom prefills this week | Span ≤ 45 days: daily. Span ≤ 366 days: ISO weeks. Longer: months |
+
+If Custom `from` is after `to`, the two dates swap. Empty or invalid Custom dates fall back to this week.
+
+Weeks **always start on Monday**, in both `en` and `zh-CN`.
+
+### What counts in the period
+
+A task is a **completion** in the period when `completed_at` is set and that timestamp falls on a local calendar day inside the range.
+
+- Includes Board **Done** cards that are not archived yet (`done` and `belated`).
+- Includes archived `done`, `belated`, and `force_ended`.
+- Dragging a card out of Done clears `completed_at`; that task is not a completion until it is finished again.
+- Open Doing sessions on To Do / Doing cards are **not** included in report duration. Duration is the stored `doing_elapsed_seconds` on completions only.
+- Reports cannot reconstruct “which hours of which day were spent on which card.” There is no session log.
+
+Period metric cards:
+
+- Completed count (all completions in range)
+- Total Doing duration (sum of those tasks’ `doing_elapsed_seconds`)
+- On time (`done`)
+- Belated (`belated`)
+- Force ended (`force_ended`)
+
+### Type and tag splits
+
+- **Type** is single-select. Counts and durations add up to the period totals. Tasks with no type are a distinct row.
+- **Tag** is multi-select. A task is counted under every tag it has. Tag duration totals **may exceed** the period duration; the page states this. Tasks with no tags are a distinct row.
+
+The type comparison chart shows at most eight types by count, then an **Other** bar for the rest.
+
+### Board backlog (not filtered by period)
+
+A separate block labeled as current board state:
+
+- To Do count (`board_column = todo`)
+- Doing count (`board_column = doing`)
+- Overdue count (`status = overdue`, still sitting in To Do or Doing)
+
+Done-column cards are not backlog. Changing the period must not change these three numbers.
+
+### Aggregation
+
+v1 computes the report in the webview from the Board, Scheduled, and Archive lists already loaded. There is no separate report IPC command and no extra SQLite table.
 
 ## Delete
 

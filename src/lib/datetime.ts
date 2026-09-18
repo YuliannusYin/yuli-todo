@@ -43,6 +43,27 @@ export function isFutureIso(iso: string, now = new Date()): boolean {
   return new Date(iso).getTime() > now.getTime();
 }
 
+export function localDayKey(date: Date): string {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+export function dayDiffFromToday(iso: string, now = new Date()): number {
+  const date = new Date(iso);
+  const day = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  return Math.round((day - today) / 86_400_000);
+}
+
+export function formatDayHeader(iso: string, locale: LocaleId): string {
+  const date = new Date(iso);
+  const formatter = new Intl.DateTimeFormat(locale === "zh-CN" ? "zh-CN" : "en", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+  return formatter.format(date);
+}
+
 export function startOfLocalDay(dateValue: string): number | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateValue);
   if (!match) {
@@ -63,6 +84,85 @@ export function endOfLocalDay(dateValue: string): number | null {
   const month = Number(match[2]);
   const day = Number(match[3]);
   return new Date(year, month - 1, day, 23, 59, 59, 999).getTime();
+}
+
+export function parseLocalDateKey(value: string): Date | null {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) {
+    return null;
+  }
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null;
+  }
+  return date;
+}
+
+export function cloneLocalDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+export function addLocalDays(date: Date, days: number): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+}
+
+export function startOfIsoWeek(date: Date): Date {
+  const day = cloneLocalDay(date);
+  const weekday = day.getDay();
+  const offset = weekday === 0 ? 6 : weekday - 1;
+  return addLocalDays(day, -offset);
+}
+
+export function startOfLocalMonth(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+export function startOfLocalYear(date: Date): Date {
+  return new Date(date.getFullYear(), 0, 1);
+}
+
+export function lastDayOfLocalMonth(date: Date): Date {
+  return addLocalDays(new Date(date.getFullYear(), date.getMonth() + 1, 1), -1);
+}
+
+export function lastDayOfLocalYear(date: Date): Date {
+  return new Date(date.getFullYear(), 11, 31);
+}
+
+export function yearMonthKey(date: Date): string {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}`;
+}
+
+export function isoLocalDayKey(iso: string): string | null {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+  return localDayKey(date);
+}
+
+export function isoInLocalDateRange(iso: string, fromKey: string, toKey: string): boolean {
+  const key = isoLocalDayKey(iso);
+  if (!key) {
+    return false;
+  }
+  return key >= fromKey && key <= toKey;
+}
+
+export function daysInclusive(fromKey: string, toKey: string): number | null {
+  const from = parseLocalDateKey(fromKey);
+  const to = parseLocalDateKey(toKey);
+  if (!from || !to) {
+    return null;
+  }
+  return Math.round((to.getTime() - from.getTime()) / 86_400_000) + 1;
 }
 
 export function formatDuration(totalSeconds: number, locale: LocaleId): string {

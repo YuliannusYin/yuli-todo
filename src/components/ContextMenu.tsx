@@ -38,7 +38,10 @@ export function ContextMenu({
     <div
       ref={ref}
       className={styles.menu}
-      style={{ left: x, top: y }}
+      style={{
+        left: Math.max(8, Math.min(x, window.innerWidth - 200)),
+        top: Math.max(8, Math.min(y, window.innerHeight - 120)),
+      }}
       role="menu"
     >
       {children}

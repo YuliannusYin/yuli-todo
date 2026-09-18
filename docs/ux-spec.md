@@ -7,16 +7,16 @@ Visual tokens come from [theming.md](theming.md). Behavior comes from [product-s
 The window is a standard desktop frame (not a tiny overlay). Minimum useful size: **880 × 580**. Default size is **1024 × 680**. Below the minimum, columns may scroll internally; the shell must not collapse to a single column.
 
 ```
-+---------------------------------------------------------------+
-|  Yuli Todo     Board  Scheduled  Archive  Settings    _ □ ×   |
-+---------------------------------------------------------------+
-|                                                               |
-|                         Page body                             |
-|                                                               |
-+---------------------------------------------------------------+
++--------------------------------------------------------------------------+
+|  Yuli Todo   Board  Scheduled  Archive  Reports  Settings        _ □ ×   |
++--------------------------------------------------------------------------+
+|                                                                          |
+|                               Page body                                  |
+|                                                                          |
++--------------------------------------------------------------------------+
 ```
 
-v1 uses a **top nav** of four destinations rather than a dense sidebar. The active route is visually obvious (underline or filled chip, theme-dependent).
+v1 uses a **top nav** of five destinations rather than a dense sidebar. Order is Board, Scheduled, Archive, Reports, Settings. The active route is visually obvious (underline or filled chip, theme-dependent). At the 880 px minimum, nav padding may tighten so labels stay on one row; do not wrap the bar onto two lines.
 
 The OS title bar is hidden. Minimize, maximize/restore, and close live in the same top chrome as the product name and nav, themed with `--yl-*` tokens. The brand and the empty stretch of the bar are drag regions (including double-click to maximize). Loading and storage-error states show the same chrome so the window can still be moved or closed.
 
@@ -40,20 +40,22 @@ Cards stack top-to-bottom in a stable order: last updated descending is acceptab
 
 ### Compact card
 
-A Board card is a single block the user can grab.
+A Board card is a single block the user can grab (`cursor: grab`, `grabbing` while pressed/dragging).
 
 Required visible pieces:
 
-- Name (one line, ellipsis)
+- Name (one line, ellipsis, 15px/600)
 - Status chip
-- Type (hidden if empty)
-- Tags (up to two chips, then `+N`)
-- Time line if either `start_at` or `end_at` exists:
+- Type (hidden if empty): uppercase mono micro-label with an accent-tinted square marker
+- Tags (up to two outlined mono chips, then `+N`)
+- Time line with a clock icon if either `start_at` or `end_at` exists (wraps rather than truncating):
   - both: `start → end`
   - start only: `Starts {time}`
   - end only: `Due {time}`
+  - rendered in the overdue status color when the task status is `overdue`
+- Hover: slight lift, accent-tinted border, deeper shadow; active press settles back
 
-**Done column extra lines** (omit on To Do / Doing):
+**Done column extra lines** (omit on To Do / Doing), separated by a hairline, each with an icon:
 
 - `Completed {completed_at}` using the same local datetime format as start/end
 - `Duration {formatted duration}` even when the value is zero
@@ -76,9 +78,13 @@ Content and notes are **not** on the compact card.
 - Start time (date + time, clearable)
 - End time (date + time, clearable)
 
-Primary button: `Add task` or `Save`. Secondary: `Cancel`.
+Primary button: `Add task` or `Save`. Secondary: `Cancel`. Buttons are content-width and right-aligned, not a split 50/50 row.
 
-If the saved `start_at` is in the future, close the form and do **not** leave a phantom card in To Do. Optional toast: `Saved to Scheduled.`
+Tags use a chip editor: type then Enter (or comma) to add; Backspace on an empty field removes the last chip; each chip has an accessible remove button. Legacy comma-pasted text still splits into chips.
+
+Both datetime fields have an inline clear (×) button when populated. Focus rings on form fields are a 3px accent-tint ring rather than the global outline. Form errors use the danger color with an alert icon, never muted gray. The dialog shows an explicit close (×) button in addition to Cancel.
+
+If the saved `start_at` is in the future, close the form and do **not** leave a phantom card in To Do. Toast: `Saved to Scheduled.`
 
 Clicking a card opens the same form in edit mode, titled with the task name. Saving applies the time-rehoming rules in the product spec.
 
@@ -90,7 +96,7 @@ Completion time and duration are **not** in this form. If `completed_at` is set,
 
 - Pointer: grab the card body (not only a tiny handle).
 - Keyboard v1: optional; if implemented, use space to pick up and arrows to move, Enter to drop, Escape to cancel.
-- While dragging, column drop targets highlight.
+- While dragging, the source card dims to 35% opacity, a lifted `DragOverlay` copy follows the pointer, and the hovered column shows an inset accent ring plus a tinted card region.
 - Dropping on Done **opens the confirmation modal before commit**. The card stays in a pending preview on Done or snaps back on cancel; either is fine as long as cancel leaves no Done record.
 - Dropping on To Do or Doing commits immediately.
 
@@ -98,11 +104,13 @@ Do not allow dropping onto nav items, Scheduled, or Archive.
 
 ## Scheduled
 
-A single chronological list, soonest `start_at` first.
+A single chronological list, soonest `start_at` first, presented inside a centered 820px column with a masthead (title, waiting count, Add task).
 
-Each row: name, type, tags, start time, end time if any, status `Will do`, and the same open / Archive now actions as the Board.
+Tasks are grouped by local calendar day. Each sticky group header shows the localized weekday/month/day, a count, and — for the next two days — a relative badge: solid `Today`, soft `Tomorrow`. No badge for later days.
 
-Empty copy: `No scheduled tasks. Set a future start time when you add a task.`
+Each row uses the same compact card as the Board: name, type, tags, start time, end time if any, status `Will do`, and the same open / Archive now actions.
+
+Empty state is a centered icon, the copy `No scheduled tasks. Set a future start time when you add a task.`, and an inline Add task button.
 
 There is no three-column layout on this page. There is an `Add task` control; the same form is used. If the user leaves start time empty, the task appears on the Board instead.
 
@@ -119,28 +127,53 @@ A filterable table or dense list. Columns / fields:
 - Archived
 - Actions: Delete
 
-Filters: search (name), status, type, tag, archived-from, archived-to.
+Filters live in a single surface card: search (name, with leading search icon), status, type, tag, archived-from, archived-to, and a Clear filters action that only appears while a filter is active.
 
-Empty copy: `Archive is empty.`
+A result line above the table reports `{count} archived tasks`, or `{shown} of {total}` while filtering. Table headers are uppercase mono micro-labels; rows highlight on hover; timestamp columns use the mono font.
 
-Delete is an explicit button or row menu. It always opens the delete confirmation. There is no drag on this page.
+Delete is a quiet icon-plus-label action that sits at reduced opacity until its row is hovered (or it receives keyboard focus). It always opens the delete confirmation. There is no drag on this page.
+
+Empty copy: `Archive is empty.` (archive icon). When filters exclude everything: `No archived tasks match these filters.` with a prominent Clear filters button.
 
 v1 has no “restore” action.
 
+## Reports
+
+The page **scrolls as a whole** (like Settings), not a locked table viewport. Content sits in a centered column (~1100 px max) with the same surface-card language as Settings and Archive.
+
+1. **Period toolbar** — segmented control `This week` / `This month` / `This year` / `Custom`. Custom reveals two `type="date"` fields (from / to) using the same control styling as Archive filters.
+2. **On the board now** — three numbers (To Do, Doing, Overdue) in one surface. Caption must make clear these are live board counts, not period totals.
+3. **Period metric cards** — five tiles: Completed, Doing time, On time, Belated, Force ended. Numbers use the display font; labels are muted micro-copy. Duration uses the same formatter as Done cards.
+4. **Completions trend** — full-width surface with a custom SVG column chart. Required: x-axis labels, y-axis integer ticks, light grid lines, accent-filled bars (`--yl-*` only). Month-length series skip x labels (about every other day or every fifth) so they do not collide. Empty period: centered empty copy `No completed tasks in this period.`, not a blank SVG.
+5. **By type** — two columns on a wide window, stacked when narrow: a comparison bar chart (top eight types by count plus Other) beside a table (name, count, duration, share of count).
+6. **By tag** — table (name, count, duration) plus the overlap footnote from [product-spec.md](product-spec.md).
+
+Chart SVG is in-app. No Chart.js, Recharts, or D3. Each chart has `role="img"` and an accessible name; the tables are the detailed reading.
+
+Empty type or tag tables reuse muted empty copy, not a spinner.
+
 ## Settings
 
-Grouped sections, not a kitchen-sink grid:
+Grouped sections rendered as individual surface cards with accent-bar headings, not a kitchen-sink grid:
 
 1. **Archive** — numeric input `Archive completed tasks after (days)` with helper text explaining that `0` archives on the next check after completion.
-2. **Appearance** — theme picker (five named preview swatches), color scheme (`Light`, `Dark`, `Match system`), and a font-size slider (`12`–`18` px, default `13`). Changing font size scales UI type and control heights immediately.
-3. **Language** — `English`, `简体中文`. Changing language updates UI chrome immediately; it does not translate user task names.
-4. **Task types** — list with rename and delete; add field for a new type name. Delete is disabled when the type is referenced.
+2. **Appearance** — theme picker (five named preview swatches; the active swatch gets an accent ring and a check badge), color scheme (`Light`, `Dark`, `Match system`) as a segmented control, and a custom-styled font-size slider (`12`–`18` px, default `13`) with a mono readout. Changing font size scales UI type and control heights immediately.
+3. **Language** — `English`, `简体中文` in a segmented control. Changing language updates UI chrome immediately; it does not translate user task names.
+4. **Task types** — list with rename and delete; add field for a new type name. Rename is disabled until the draft differs from the current name; Delete is disabled when the type is referenced.
+
+All picker buttons expose `aria-pressed`.
 
 ## Dialogs
 
-All confirmations are modal, focus-trapped, dismissible via Cancel, Escape, and the overlay. Confirm buttons are explicit (`Move to Done`, `Archive now`, `Delete`). The Done and Archive confirms are not color-danger. Delete confirm uses the theme’s danger color.
+All confirmations are modal, focus-trapped, dismissible via Cancel, Escape, the overlay, and an explicit × button in the panel corner. The overlay fades in; the panel rises (fade + slight scale/translate). Confirm buttons are explicit (`Move to Done`, `Archive now`, `Delete`). The Done and Archive confirms are not color-danger. Delete confirm uses the theme’s danger color.
 
 Do not auto-dismiss these dialogs on a timer.
+
+## App chrome
+
+The title bar groups an accent-colored brand mark (monogram) with the wordmark, then the top nav. The active nav item exposes `aria-current="page"`; each theme styles it differently (inset accent rule on Metal, pill on Claude/TikTok, bottom rule on VS Code/GitHub). Column headers carry a count badge, also theme-shaped.
+
+Toasts slide up from the bottom-right with a check icon and an accent left rule.
 
 ## Context menu
 
@@ -167,9 +200,11 @@ Chip text is the localized status label from [i18n.md](i18n.md).
 
 ## Empty, loading, and error
 
-- **Loading** (first paint while SQLite opens): a short unlabeled pulse in the page body is enough. Do not invent a marketing splash.
-- **Storage error**: full-page message with the data path and `Quit`.
-- **No results** in Archive filters: `No archived tasks match these filters.` plus a clear-filters action.
+- **Loading** (first paint while SQLite opens): a short unlabeled pill pulse in the page body is enough. Do not invent a marketing splash.
+- **Board empty columns**: centered circular icon + the empty copy; the empty To Do column also contains a dashed Add task button, so the primary action is never hidden.
+- **Storage error**: centered card with a danger-tinted alert icon, the data path in mono, and a solid danger `Quit` button.
+- **No results** in Archive filters: search icon + `No archived tasks match these filters.` plus a clear-filters button.
+- **Reports empty period**: `No completed tasks in this period.` inside the trend surface. Backlog tiles still render.
 
 ## Accessibility baseline
 
@@ -178,7 +213,7 @@ Chip text is the localized status label from [i18n.md](i18n.md).
 - Dialogs return focus to the card that opened them.
 - Hit targets for add, nav, and card menus are at least 32 px.
 
-Motion stays modest: drag preview and dialog fade. No celebration confetti on Done.
+Motion stays modest: dialog/menu/toast fade-and-rise, card hover lift, drag overlay. Everything is wrapped in a global `prefers-reduced-motion: reduce` override that collapses durations to ~0. No celebration confetti on Done.
 
 ## What the first implementation should match
 

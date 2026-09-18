@@ -4,11 +4,14 @@
   z-index: 40;
   display: grid;
   place-items: center;
-  background: color-mix(in srgb, var(--yl-text) 28%, transparent);
+  background: var(--yl-overlay);
+  backdrop-filter: blur(2px);
   padding: 24px;
+  animation: yl-fade-in var(--yl-duration-2) var(--yl-ease);
 }
 
 .panel {
+  position: relative;
   width: min(560px, 100%);
   max-height: calc(100vh - 48px);
   overflow: auto;
@@ -16,9 +19,10 @@
   color: var(--yl-text);
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius-card);
-  box-shadow: var(--yl-shadow);
+  box-shadow: var(--yl-shadow-pop);
   display: flex;
   flex-direction: column;
+  animation: yl-rise var(--yl-duration-3) var(--yl-ease-out);
 }
 
 .panel[data-size="large"] {
@@ -26,16 +30,17 @@
 }
 
 .header {
-  padding: 16px 20px 8px;
+  padding: 18px 52px 6px 20px;
 }
 
 .title {
   font-family: var(--yl-font-display);
   font-size: 1.4667rem;
+  line-height: 1.25;
 }
 
 .body {
-  padding: 8px 20px 16px;
+  padding: 10px 20px 16px;
   flex: 1;
 }
 
@@ -47,24 +52,88 @@
   border-top: 1px solid var(--yl-border);
 }
 
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: var(--yl-radius);
+  background: transparent;
+  color: var(--yl-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--yl-duration-1) var(--yl-ease),
+    color var(--yl-duration-1) var(--yl-ease);
+}
+
+.close:hover {
+  background: var(--yl-chip-bg);
+  color: var(--yl-text);
+}
+
 .button {
-  min-height: 2.1333rem;
-  min-width: 72px;
-  padding: 6px 14px;
+  min-height: var(--yl-control-h);
+  min-width: 76px;
+  padding: 6px 16px;
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius);
   background: var(--yl-card);
+  color: var(--yl-text);
+  font-weight: 500;
   cursor: pointer;
+  transition:
+    background-color var(--yl-duration-1) var(--yl-ease),
+    border-color var(--yl-duration-1) var(--yl-ease),
+    filter var(--yl-duration-1) var(--yl-ease),
+    transform var(--yl-duration-1) var(--yl-ease);
+}
+
+.button:hover {
+  background: var(--yl-card-hover);
+  border-color: color-mix(in srgb, var(--yl-accent) 35%, var(--yl-border));
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.button:disabled:hover {
+  background: var(--yl-card);
+  border-color: var(--yl-border);
 }
 
 .primary {
   background: var(--yl-accent);
   color: var(--yl-accent-text);
   border-color: var(--yl-accent);
+  font-weight: 600;
+}
+
+.primary:hover {
+  background: var(--yl-accent);
+  filter: brightness(1.07);
+  border-color: var(--yl-accent);
 }
 
 .danger {
   background: var(--yl-danger);
   color: #fff;
+  border-color: var(--yl-danger);
+  font-weight: 600;
+}
+
+.danger:hover {
+  background: var(--yl-danger);
+  filter: brightness(1.06);
   border-color: var(--yl-danger);
 }

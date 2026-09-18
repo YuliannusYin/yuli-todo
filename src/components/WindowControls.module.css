@@ -1,7 +1,7 @@
 .group {
   display: flex;
   flex-shrink: 0;
-  height: 3.7333rem;
+  height: var(--yl-header-h);
 }
 
 .btn {
@@ -10,7 +10,7 @@
   justify-content: center;
   align-items: center;
   width: 2.9333rem;
-  height: 3.7333rem;
+  height: var(--yl-header-h);
   padding: 0;
   margin: 0;
   border: 0;
@@ -18,13 +18,26 @@
   color: var(--yl-text);
   cursor: pointer;
   border-radius: 0;
+  transition:
+    background-color var(--yl-duration-1) var(--yl-ease),
+    color var(--yl-duration-1) var(--yl-ease);
 }
 
 .btn:hover {
   background: var(--yl-card-hover);
 }
 
+.btn:active {
+  background: var(--yl-accent-soft);
+}
+
 .close:hover {
   background: var(--yl-danger);
   color: #fff;
+}
+
+.close:active {
+  background: var(--yl-danger);
+  color: #fff;
+  filter: brightness(0.9);
 }

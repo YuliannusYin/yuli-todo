@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
+import { IconX } from "./icons";
 import styles from "./Dialog.module.css";
 
 const FOCUSABLE =
@@ -18,6 +19,7 @@ type DialogProps = {
   children: ReactNode;
   footer?: ReactNode;
   size?: "default" | "large";
+  closeLabel?: string;
 };
 
 export function Dialog({
@@ -27,6 +29,7 @@ export function Dialog({
   children,
   footer,
   size = "default",
+  closeLabel,
 }: DialogProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
@@ -40,7 +43,8 @@ export function Dialog({
     const previous = document.activeElement as HTMLElement | null;
     const panel = panelRef.current;
     const focusables = panel?.querySelectorAll<HTMLElement>(FOCUSABLE);
-    focusables?.[0]?.focus();
+    const autofocused = panel?.querySelector<HTMLElement>("[autofocus]");
+    (autofocused ?? focusables?.[0])?.focus();
 
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -95,6 +99,17 @@ export function Dialog({
         aria-modal="true"
         aria-labelledby={titleId}
       >
+        {closeLabel ? (
+          <button
+            type="button"
+            className={styles.close}
+            aria-label={closeLabel}
+            title={closeLabel}
+            onClick={onClose}
+          >
+            <IconX size={15} />
+          </button>
+        ) : null}
         <div className={styles.header}>
           <h2 id={titleId} className={styles.title}>
             {title}

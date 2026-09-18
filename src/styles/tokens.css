@@ -30,6 +30,38 @@
   --yl-status-belated-text: #fff7ef;
   --yl-status-force-ended-text: #fff7ef;
   --yl-flourish: #25f4ee;
+
+  /* Derived tokens — declared once, re-resolved against every theme block
+     because each right-hand side references other custom properties. */
+  --yl-accent-soft: color-mix(in srgb, var(--yl-accent) 14%, transparent);
+  --yl-accent-softer: color-mix(in srgb, var(--yl-accent) 8%, transparent);
+  --yl-danger-soft: color-mix(in srgb, var(--yl-danger) 12%, transparent);
+  --yl-track: color-mix(in srgb, var(--yl-text) 5%, var(--yl-bg));
+  --yl-track-deep: color-mix(in srgb, var(--yl-text) 8%, var(--yl-bg));
+  --yl-chip-bg: color-mix(in srgb, var(--yl-text) 7%, transparent);
+  --yl-chip-border: color-mix(in srgb, var(--yl-text) 16%, transparent);
+  --yl-overlay: color-mix(in srgb, var(--yl-text) 40%, transparent);
+  --yl-focus: color-mix(in srgb, var(--yl-accent) 62%, var(--yl-text));
+  --yl-shadow-pop: 0 12px 32px color-mix(in srgb, var(--yl-text) 26%, transparent),
+    0 2px 8px color-mix(in srgb, var(--yl-text) 14%, transparent);
+  --yl-shadow-card-hover: var(--yl-shadow),
+    0 6px 18px color-mix(in srgb, var(--yl-text) 13%, transparent);
+
+  --yl-control-h: 2.1333rem;
+  --yl-header-h: 3.7333rem;
+
+  --yl-space-1: 0.2667rem;
+  --yl-space-2: 0.5333rem;
+  --yl-space-3: 0.8rem;
+  --yl-space-4: 1.0667rem;
+  --yl-space-5: 1.6rem;
+  --yl-space-6: 2.4rem;
+
+  --yl-duration-1: 120ms;
+  --yl-duration-2: 180ms;
+  --yl-duration-3: 260ms;
+  --yl-ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --yl-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html[data-theme="metal"][data-scheme="light"] {

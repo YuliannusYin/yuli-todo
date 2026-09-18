@@ -30,7 +30,12 @@ export function TitleBar({ children }: { children?: ReactNode }) {
 
   return (
     <header className={styles.bar} onMouseDown={onMouseDown}>
-      <div className={styles.brand}>{t("app.name")}</div>
+      <div className={styles.brand}>
+        <span className={styles.mark} data-brand-mark aria-hidden="true">
+          Y
+        </span>
+        <span className={styles.wordmark}>{t("app.name")}</span>
+      </div>
       {children}
       <div className={styles.spacer} />
       <WindowControls />

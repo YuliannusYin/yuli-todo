@@ -1,25 +1,40 @@
 .card {
   display: grid;
-  gap: 8px;
-  padding: 12px;
-  margin-bottom: 8px;
-  min-height: 2.1333rem;
+  gap: 7px;
+  width: 100%;
+  padding: 11px 13px 12px;
+  margin-bottom: 9px;
+  min-height: var(--yl-control-h);
   background: var(--yl-card);
   border: 1px solid var(--yl-border);
   border-radius: var(--yl-radius-card);
   box-shadow: var(--yl-shadow);
-  cursor: pointer;
+  cursor: grab;
   text-align: left;
-  width: 100%;
+  transition:
+    background-color var(--yl-duration-1) var(--yl-ease),
+    border-color var(--yl-duration-1) var(--yl-ease),
+    box-shadow var(--yl-duration-2) var(--yl-ease),
+    transform var(--yl-duration-1) var(--yl-ease);
 }
 
 .card:hover {
   background: var(--yl-card-hover);
+  border-color: color-mix(in srgb, var(--yl-accent) 32%, var(--yl-border));
+  box-shadow: var(--yl-shadow-card-hover);
+  transform: translateY(-1px);
+}
+
+.card:active {
+  cursor: grabbing;
+  transform: translateY(0) scale(0.994);
 }
 
 .name {
-  font-size: 1.0667rem;
+  font-size: 1.1538rem;
   font-weight: 600;
+  line-height: 1.35;
+  color: var(--yl-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -32,17 +47,76 @@
   align-items: center;
 }
 
-.type,
-.tag,
-.more,
-.time,
-.extra {
-  font-size: 0.8rem;
+.type {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--yl-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: var(--yl-text-muted);
+  white-space: nowrap;
 }
 
-.tag {
-  border: 1px solid var(--yl-border);
+.type::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--yl-accent) 55%, var(--yl-text-muted));
+}
+
+.tag,
+.more {
+  font-family: var(--yl-font-mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--yl-text-muted);
+  background: var(--yl-chip-bg);
+  border: 1px solid var(--yl-chip-border);
   border-radius: var(--yl-radius);
-  padding: 1px 6px;
+  padding: 0 7px;
+  white-space: nowrap;
+}
+
+.more {
+  background: transparent;
+}
+
+.time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--yl-font-mono);
+  font-size: 0.75rem;
+  color: var(--yl-text-muted);
+  min-width: 0;
+}
+
+.timeText {
+  min-width: 0;
+}
+
+.timeOverdue,
+.timeOverdue .timeText {
+  color: var(--yl-status-overdue);
+  font-weight: 500;
+}
+
+.doneMeta {
+  display: grid;
+  gap: 4px;
+  margin-top: 1px;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--yl-text) 9%, transparent);
+}
+
+.extra {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--yl-font-mono);
+  font-size: 0.75rem;
+  color: var(--yl-text-muted);
 }

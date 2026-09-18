@@ -1,9 +1,9 @@
 # Yuli Todo
 
-A personal, offline Windows kanban. Three columns — **To Do**, **Doing**, **Done** — plus Scheduled and Archive. No account. No network.
+A personal, offline Windows kanban. Three columns — **To Do**, **Doing**, **Done** — plus Scheduled, Archive, and Reports. No account. No network.
 
-**Version:** `v0.5.2`  
-**Status:** pre-release Windows app through Roadmap v0.5.0, plus a drag-to-column IPC fix, custom window chrome, and UI font scaling.
+**Version:** `v0.6.0`  
+**Status:** pre-release Windows app through Roadmap v0.6.0.
 
 ## License
 
