@@ -10,6 +10,7 @@ const NAV: { id: AppView; key: string }[] = [
   { id: "board", key: "nav.board" },
   { id: "scheduled", key: "nav.scheduled" },
   { id: "archive", key: "nav.archive" },
+  { id: "reports", key: "nav.reports" },
   { id: "settings", key: "nav.settings" },
 ];
 

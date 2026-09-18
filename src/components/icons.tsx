@@ -149,3 +149,14 @@ export function IconInbox(props: IconProps) {
     </svg>
   );
 }
+
+export function IconChart(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M4 19.5h16" />
+      <path d="M7 16.5v-5" />
+      <path d="M12 16.5V7" />
+      <path d="M17 16.5v-8" />
+    </svg>
+  );
+}

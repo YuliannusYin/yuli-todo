@@ -12,7 +12,7 @@ The stack below is **locked**. Do not add a library from the rejected list witho
 | Shell | Tauri **2** (webview + Rust). WebView2 as provided by Tauri |
 | Toolchain | Rust **stable**, Node **LTS**, package manager **npm** |
 | Frontend | **React 18+** (whatever `create-tauri-app` scaffolds) + **TypeScript** (`strict`) + **Vite** |
-| Navigation | No React Router. A view union: `board` \| `scheduled` \| `archive` \| `settings` in React state |
+| Navigation | No React Router. A view union: `board` \| `scheduled` \| `archive` \| `reports` \| `settings` in React state |
 | Styling | **CSS Modules** + one global token stylesheet. Theme/scheme via `data-theme` / `data-scheme` and [theming.md](theming.md) variables. No Tailwind, no CSS-in-JS |
 | Components | **Fully custom**. Dialogs, context menus, focus trap, Escape/overlay dismiss — written in-app to match [ux-spec.md](ux-spec.md) |
 | Drag and drop | `@dnd-kit/core` and `@dnd-kit/sortable` |
@@ -34,8 +34,9 @@ The stack below is **locked**. Do not add a library from the rejected list witho
 - date-fns, Day.js, Moment, Temporal polyfills
 - Electron, Next.js, Vue, Svelte
 - Cloud SDKs, auto-updater that hits the network
+- Chart.js, Recharts, D3, or any other chart package (Reports draws SVG in-app)
 
-The UI is four screens switched by view state, not URL routes. Deep linking is not a v1 requirement.
+The UI is five screens switched by view state, not URL routes. Deep linking is not a v1 requirement.
 
 ## Process shape
 
@@ -108,6 +109,7 @@ Keep it small:
 
 - `AppView`, settings, and locale in a React context
 - Task lists fetched per screen; invalidate on `tasks-changed` and after successful commands
+- Reports aggregates those lists in the webview (`src/lib/report.ts`) against the local calendar. No extra report command
 - No offline replica besides SQLite — the file is the source of truth
 - No client-side router cache or normalized entity store
 
@@ -137,6 +139,7 @@ Keep it small:
 - Rust (`cargo test`, in-memory `rusqlite`) for the transition table in [data-model.md](data-model.md)
 - Rust unit tests for `flush_doing` / `start_doing` (pause on To Do, resume on Doing, direct To Do → Done stays `0`, force-end from Doing includes the open session, clock jump backward adds `0`)
 - Vitest + React Testing Library: Done-confirm cancel must not call `move_task`
+- Vitest: report period bounds (Monday-start weeks), completions in/out of range, Done-on-board included, backlog independent of period, type totals add, tag totals may overlap
 - No Playwright/Cypress requirement in v1; the Rust transition tests are not optional
 
 ## Repository layout (future)

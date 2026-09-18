@@ -4,6 +4,7 @@ import { AppShell } from "./components/AppShell";
 import { TitleBar } from "./components/TitleBar";
 import { ArchiveView } from "./views/ArchiveView";
 import { BoardView } from "./views/BoardView";
+import { ReportsView } from "./views/ReportsView";
 import { ScheduledView } from "./views/ScheduledView";
 import { SettingsView } from "./views/SettingsView";
 import { StorageErrorView } from "./views/StorageErrorView";
@@ -33,6 +34,7 @@ function Shell() {
         {view === "board" ? <BoardView /> : null}
         {view === "scheduled" ? <ScheduledView /> : null}
         {view === "archive" ? <ArchiveView /> : null}
+        {view === "reports" ? <ReportsView /> : null}
         {view === "settings" ? <SettingsView /> : null}
       </AppShell>
     </TaskProvider>

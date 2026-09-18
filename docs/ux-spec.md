@@ -7,16 +7,16 @@ Visual tokens come from [theming.md](theming.md). Behavior comes from [product-s
 The window is a standard desktop frame (not a tiny overlay). Minimum useful size: **880 × 580**. Default size is **1024 × 680**. Below the minimum, columns may scroll internally; the shell must not collapse to a single column.
 
 ```
-+---------------------------------------------------------------+
-|  Yuli Todo     Board  Scheduled  Archive  Settings    _ □ ×   |
-+---------------------------------------------------------------+
-|                                                               |
-|                         Page body                             |
-|                                                               |
-+---------------------------------------------------------------+
++--------------------------------------------------------------------------+
+|  Yuli Todo   Board  Scheduled  Archive  Reports  Settings        _ □ ×   |
++--------------------------------------------------------------------------+
+|                                                                          |
+|                               Page body                                  |
+|                                                                          |
++--------------------------------------------------------------------------+
 ```
 
-v1 uses a **top nav** of four destinations rather than a dense sidebar. The active route is visually obvious (underline or filled chip, theme-dependent).
+v1 uses a **top nav** of five destinations rather than a dense sidebar. Order is Board, Scheduled, Archive, Reports, Settings. The active route is visually obvious (underline or filled chip, theme-dependent). At the 880 px minimum, nav padding may tighten so labels stay on one row; do not wrap the bar onto two lines.
 
 The OS title bar is hidden. Minimize, maximize/restore, and close live in the same top chrome as the product name and nav, themed with `--yl-*` tokens. The brand and the empty stretch of the bar are drag regions (including double-click to maximize). Loading and storage-error states show the same chrome so the window can still be moved or closed.
 
@@ -137,6 +137,21 @@ Empty copy: `Archive is empty.` (archive icon). When filters exclude everything:
 
 v1 has no “restore” action.
 
+## Reports
+
+The page **scrolls as a whole** (like Settings), not a locked table viewport. Content sits in a centered column (~1100 px max) with the same surface-card language as Settings and Archive.
+
+1. **Period toolbar** — segmented control `This week` / `This month` / `This year` / `Custom`. Custom reveals two `type="date"` fields (from / to) using the same control styling as Archive filters.
+2. **On the board now** — three numbers (To Do, Doing, Overdue) in one surface. Caption must make clear these are live board counts, not period totals.
+3. **Period metric cards** — five tiles: Completed, Doing time, On time, Belated, Force ended. Numbers use the display font; labels are muted micro-copy. Duration uses the same formatter as Done cards.
+4. **Completions trend** — full-width surface with a custom SVG column chart. Required: x-axis labels, y-axis integer ticks, light grid lines, accent-filled bars (`--yl-*` only). Month-length series skip x labels (about every other day or every fifth) so they do not collide. Empty period: centered empty copy `No completed tasks in this period.`, not a blank SVG.
+5. **By type** — two columns on a wide window, stacked when narrow: a comparison bar chart (top eight types by count plus Other) beside a table (name, count, duration, share of count).
+6. **By tag** — table (name, count, duration) plus the overlap footnote from [product-spec.md](product-spec.md).
+
+Chart SVG is in-app. No Chart.js, Recharts, or D3. Each chart has `role="img"` and an accessible name; the tables are the detailed reading.
+
+Empty type or tag tables reuse muted empty copy, not a spinner.
+
 ## Settings
 
 Grouped sections rendered as individual surface cards with accent-bar headings, not a kitchen-sink grid:
@@ -189,6 +204,7 @@ Chip text is the localized status label from [i18n.md](i18n.md).
 - **Board empty columns**: centered circular icon + the empty copy; the empty To Do column also contains a dashed Add task button, so the primary action is never hidden.
 - **Storage error**: centered card with a danger-tinted alert icon, the data path in mono, and a solid danger `Quit` button.
 - **No results** in Archive filters: search icon + `No archived tasks match these filters.` plus a clear-filters button.
+- **Reports empty period**: `No completed tasks in this period.` inside the trend surface. Backlog tiles still render.
 
 ## Accessibility baseline
 

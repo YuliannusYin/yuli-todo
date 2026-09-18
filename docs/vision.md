@@ -49,6 +49,7 @@ These are explicitly out of scope until a later, separate decision:
 | Status | Lifecycle flag such as `to_do`, `overdue`, or `belated` |
 | Scheduled | Page that lists `will_do` tasks whose `start_at` is still in the future |
 | Archive | Page of tasks that have left the board permanently (for v1) |
+| Reports | Page of period totals for completions and Doing duration, plus a live board backlog |
 | Task type | User-defined **single-select** category |
 | Tag | Free-form **multi-select** label |
 | Content | Primary description of the work |

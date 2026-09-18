@@ -16,6 +16,7 @@ v1 is done when all of the following are true on Windows, offline:
 - Archive delay (default 3 days, 0–365), Archive now, Archive page, delete only in Archive with confirm
 - User-defined types, free-form tags, optional start/end at minute precision
 - Completion time and Doing-only duration on Done cards and Archive (read-only, including `force_ended` and `0`)
+- Reports page: week/month/year/custom completions and Doing duration, type/tag splits, current board backlog
 - Five themes × light/dark, plus Match system
 - UI language English and Simplified Chinese
 - SQLite in app data, no login, no network capability
@@ -64,6 +65,15 @@ First commit. Design-only; no application source.
 - Remaining i18n keys, empty states, error page
 - Transition unit tests
 
+### v0.6.0 — Reports
+
+- Fifth top-nav page: Reports
+- Period presets this week (Monday start) / this month / this year / custom
+- Completions and Doing duration from `completed_at` (Done on the board and archive, including `force_ended`)
+- Type and tag breakdown tables; custom SVG trend and type comparison charts with axes
+- Live board backlog (To Do / Doing / Overdue) independent of the period
+- Spec updates for five screens; no new IPC or schema
+
 ### v1.0.0 — Windows personal release
 
 - v1 definition checklist above
@@ -77,4 +87,4 @@ Until v0.1.0 exists, **these Markdown files win**. After implementation starts, 
 
 ## Suggested next implementation slice
 
-**v0.1.0:** scaffold Tauri, four empty views, theme tokens, and i18n chrome. Do not skip the Done confirmation when drag is added in a later version.
+**v1.0.0:** Windows personal release of the v1 definition checklist.
